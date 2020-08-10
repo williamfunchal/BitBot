@@ -162,6 +162,20 @@ class BitMEX(object):
         return self._curl_bitmex(path=endpoint, postdict=postdict, verb="POST")
 
     @authentication_required
+    def close_position(self, quantity):
+        """Place an close position order."""
+        
+        endpoint = "order"
+        
+        postdict = {
+            'symbol': self.symbol,
+            'orderQty': quantity,
+            'ordType': 'Market',
+            'execInsts': 'Close' 
+        }
+        return self._curl_bitmex(path=endpoint, postdict=postdict, verb="POST")
+
+    @authentication_required
     def amend_bulk_orders(self, orders):
         """Amend multiple orders."""
         # Note rethrow; if this fails, we want to catch it and re-tick

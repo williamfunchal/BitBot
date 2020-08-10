@@ -161,6 +161,11 @@ class ExchangeInterface:
             symbol = self.symbol
         return self.bitmex.position(symbol)
 
+    def close_position(self, quantity, symbol=None):
+        if symbol is None:
+            symbol = self.symbol
+        return self.bitmex.close_position(quantity)
+
     def get_ticker(self, symbol=None):
         if symbol is None:
             symbol = self.symbol
@@ -199,6 +204,9 @@ class ExchangeInterface:
 
 
 class OrderManager:
+
+    max_profit = settings.TARGET_TO_PROFIT
+
     def __init__(self):
         self.exchange = ExchangeInterface(settings.DRY_RUN)
         # Once exchange is created, register exit handler that will always cancel orders
@@ -244,7 +252,26 @@ class OrderManager:
             logger.info("Avg Cost Price: %.*f" % (tickLog, float(position['avgCostPrice'])))
             logger.info("Avg Entry Price: %.*f" % (tickLog, float(position['avgEntryPrice'])))
         logger.info("Contracts Traded This Run: %d" % (self.running_qty - self.starting_qty))
-        logger.info("Total Contract Delta: %.4f XBT" % self.exchange.calc_delta()['spot'])
+        logger.info("Total Contract Delta: %.4f XBT" % self.exchange.calc_delta()['spot'])        
+        
+
+    def verify_profit(self):
+        """Verify profit and Close Position at market Price"""        
+
+        position = self.exchange.get_position()
+        tickLog = self.exchange.get_instrument()['tickLog']
+
+        logger.info("Target PNL: %.*f" % (tickLog, float(settings.TARGET_TO_PROFIT)))
+
+        # if max_profit < float(position['unrealisedGrossPnl']) :
+        #     logger.info("Aproximated PNL: %.*f" % (tickLog, float(position['unrealisedGrossPnl'])))
+        #     self.exchange.close_position(float(position['currentQty']) * -1)
+        #     max_profit = settings.TARGET_TO_PROFIT
+        #     return True
+            
+        
+        logger.info("Unrealised PNL: %.*f" % (tickLog, float(position['unrealisedGrossPnl'])))
+
 
     def get_ticker(self):
         ticker = self.exchange.get_ticker()
@@ -309,6 +336,8 @@ class OrderManager:
 
     def place_orders(self):
         """Create order items for use in convergence."""
+
+        logger.info("Create order items for use in convergence.")
 
         buy_orders = []
         sell_orders = []
@@ -512,6 +541,7 @@ class OrderManager:
 
             self.sanity_check()  # Ensures health of mm - several cut-out points here
             self.print_status()  # Print skew, delta, etc
+            self.verify_profit() # Realize if are profitble
             self.place_orders()  # Creates desired orders and converges to existing orders
 
     def restart(self):
