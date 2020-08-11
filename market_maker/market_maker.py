@@ -265,10 +265,10 @@ class OrderManager:
 
         logger.info("Target PNL: %.*f" % (tickLog, float(settings.TARGET_TO_PROFIT)))
 
-        if max_profit < float(position['unrealisedGrossPnl']) :
-            logger.info("Aproximated PNL: %.*f" % (tickLog, float(position['unrealisedGrossPnl'])))
-            self.exchange.close_position(float(position['currentQty']) * -1)
-            return True
+        # if max_profit < float(position['unrealisedGrossPnl']) :
+        #     logger.info("Aproximated PNL: %.*f" % (tickLog, float(position['unrealisedGrossPnl'])))
+        #     self.exchange.close_position(float(position['currentQty']) * -1)
+        #     return True
             
         
         logger.info("Unrealised PNL: %.*f" % (tickLog, float(position['unrealisedGrossPnl'])))
