@@ -13,8 +13,8 @@ BASE_URL = "https://testnet.bitmex.com/api/v1/"
 # API_KEY = "k1FTMOrfBR_4H0z4DKSxJLQl"
 # API_SECRET = "-eQJgYT_D5v264jd0X2QqaLCL1u8eRUkSw4nu0yr2gSPB85u"
 
-API_KEY = "ohMnhqwAXI_x3On24U9S1xHN"
-API_SECRET = "LwFfZ8LjvNrECkiwo-mn7DKS221ieeXk_JfcpPD0IccWBF2F"
+API_KEY = "m42_T2utX8zm_v7v-9_7F2Lt"
+API_SECRET = "vOIYOG745fuPy4WxmUAS-PLYYZYDcnIHvnpPkWt_F9bqND_r"
 
 
 ########################################################################################################################

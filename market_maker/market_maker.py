@@ -205,7 +205,7 @@ class ExchangeInterface:
 
 class OrderManager:
 
-    max_profit = settings.TARGET_TO_PROFIT
+    
 
     def __init__(self):
         self.exchange = ExchangeInterface(settings.DRY_RUN)
@@ -261,13 +261,14 @@ class OrderManager:
         position = self.exchange.get_position()
         tickLog = self.exchange.get_instrument()['tickLog']
 
+        max_profit = settings.TARGET_TO_PROFIT
+
         logger.info("Target PNL: %.*f" % (tickLog, float(settings.TARGET_TO_PROFIT)))
 
-        # if max_profit < float(position['unrealisedGrossPnl']) :
-        #     logger.info("Aproximated PNL: %.*f" % (tickLog, float(position['unrealisedGrossPnl'])))
-        #     self.exchange.close_position(float(position['currentQty']) * -1)
-        #     max_profit = settings.TARGET_TO_PROFIT
-        #     return True
+        if max_profit < float(position['unrealisedGrossPnl']) :
+            logger.info("Aproximated PNL: %.*f" % (tickLog, float(position['unrealisedGrossPnl'])))
+            self.exchange.close_position(float(position['currentQty']) * -1)
+            return True
             
         
         logger.info("Unrealised PNL: %.*f" % (tickLog, float(position['unrealisedGrossPnl'])))
