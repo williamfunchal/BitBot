@@ -261,7 +261,7 @@ class OrderManager:
         position = self.exchange.get_position()
         tickLog = self.exchange.get_instrument()['tickLog']
 
-        max_profit = settings.TARGET_TO_PROFIT
+        max_profit = float(settings.TARGET_TO_PROFIT)
 
         logger.info("Target PNL: %.*f" % (tickLog, float(settings.TARGET_TO_PROFIT)))
 
