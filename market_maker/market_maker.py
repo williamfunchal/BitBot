@@ -263,9 +263,9 @@ class OrderManager:
 
         max_profit = float(settings.TARGET_TO_PROFIT)
 
-        logger.info("Target PNL: %.*f" % (tickLog, float(settings.TARGET_TO_PROFIT)))
+        logger.info("Target ROE: %.*f" % (tickLog, float(settings.TARGET_TO_PROFIT)))
 
-        if max_profit < float(position['unrealisedGrossPnl']) :
+        if max_profit < float(position['unrealisedRoePcnt']) :
             logger.info("Aproximated PNL: %.*f" % (tickLog, float(position['unrealisedGrossPnl'])))
             self.exchange.close_position(float(position['currentQty']) * -1)
             return True
