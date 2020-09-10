@@ -209,6 +209,8 @@ class OrderManager:
 
     def __init__(self):
         self.exchange = ExchangeInterface(settings.DRY_RUN)
+        self.max_profit = float(settings.TARGET_TO_PROFIT)
+        self.trailling = False
         # Once exchange is created, register exit handler that will always cancel orders
         # on any error.
         atexit.register(self.exit)
@@ -261,17 +263,33 @@ class OrderManager:
         position = self.exchange.get_position()
         tickLog = self.exchange.get_instrument()['tickLog']
 
-        max_profit = float(settings.TARGET_TO_PROFIT)
+        roe = position['unrealisedRoePcnt']
+        pnl = position['unrealisedGrossPnl']
+        qty = position['currentQty']
 
-        logger.info("Target ROE: %.*f" % (tickLog, float(settings.TARGET_TO_PROFIT)))
+        logger.info("Target ROE: %.*f" % (tickLog, float(self.max_profit)))
 
-        if max_profit < float(position['unrealisedRoePcnt']) :
-            logger.info("Aproximated PNL: %.*f" % (tickLog, float(position['unrealisedGrossPnl'])))
-            self.exchange.close_position(float(position['currentQty']) * -1)
+
+        if  self.trailling == False and self.max_profit < roe :
+            self.trailling = True
+            self.max_profit = roe
+            return True
+
+        if self.trailling == True and self.max_profit < roe :
+            self.max_profit = roe
+            logger.info("Trailling: %.*f" % (tickLog, float(self.max_profit)))
+            return True
+
+        if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
+            logger.info("Aproximated realized PNL: %.*f" % (tickLog, float(pnl))) 
+            self.exchange.close_position(float(qty) * -1)
+            logger.info("ROE realized: %.*f" % (tickLog, float(roe)))
+            self.trailling = False
+            self.max_profit = float(settings.TARGET_TO_PROFIT)
             return True
             
         
-        logger.info("Unrealised PNL: %.*f" % (tickLog, float(position['unrealisedGrossPnl'])))
+        logger.info("Unrealised PNL: %.*f" % (tickLog, float(pnl)))
 
 
     def get_ticker(self):
