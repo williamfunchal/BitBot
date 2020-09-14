@@ -264,6 +264,7 @@ class OrderManager:
         tickLog = self.exchange.get_instrument()['tickLog']
 
         roe = position['unrealisedRoePcnt']
+        pnl_percent = position['unrealisedPnlPcnt']
         pnl = position['unrealisedGrossPnl']
         qty = position['currentQty']
 
@@ -290,6 +291,8 @@ class OrderManager:
             
         
         logger.info("Unrealised PNL: %.*f" % (tickLog, float(pnl)))
+        logger.info("Unrealized ROE: %.*f" % (tickLog, float(roe)))
+        logger.info("Unrealized PNL percent: %.*f" % (tickLog, float(pnl_percent)))
 
 
     def get_ticker(self):

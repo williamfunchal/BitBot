@@ -24,7 +24,7 @@ API_SECRET = "-eQJgYT_D5v264jd0X2QqaLCL1u8eRUkSw4nu0yr2gSPB85u"
 # Instrument to market make on BitMEX.
 SYMBOL = "XBTUSD"
 
-TARGET_TO_PROFIT = 0.25
+TARGET_TO_PROFIT = 0.15
 
 
 ########################################################################################################################
@@ -90,7 +90,7 @@ DRY_RUN = False
 # How often to re-check and replace orders.
 # Generally, it's safe to make this short because we're fetching from websockets. But if too many
 # order amend/replaces are done, you may hit a ratelimit. If so, email BitMEX if you feel you need a higher limit.
-LOOP_INTERVAL = 5
+LOOP_INTERVAL = 2
 
 # Wait times between orders / errors
 API_REST_INTERVAL = 1
