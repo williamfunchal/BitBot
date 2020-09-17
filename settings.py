@@ -37,7 +37,7 @@ ORDER_PAIRS = 6
 # ORDER_START_SIZE will be the number of contracts submitted on level 1
 # Number of contracts from level 1 to ORDER_PAIRS - 1 will follow the function
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
-ORDER_START_SIZE = 600
+ORDER_START_SIZE = 1200
 ORDER_STEP_SIZE = 100
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
@@ -90,7 +90,7 @@ DRY_RUN = False
 # How often to re-check and replace orders.
 # Generally, it's safe to make this short because we're fetching from websockets. But if too many
 # order amend/replaces are done, you may hit a ratelimit. If so, email BitMEX if you feel you need a higher limit.
-LOOP_INTERVAL = 2
+LOOP_INTERVAL = 1
 
 # Wait times between orders / errors
 API_REST_INTERVAL = 1
