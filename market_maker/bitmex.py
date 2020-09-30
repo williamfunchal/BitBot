@@ -170,7 +170,7 @@ class BitMEX(object):
         postdict = {
             'symbol': self.symbol,
             'orderQty': quantity,
-            'ordType': 'Market',
+            'ordType': 'Limit',
             'execInsts': 'Close' 
         }
         return self._curl_bitmex(path=endpoint, postdict=postdict, verb="POST")
