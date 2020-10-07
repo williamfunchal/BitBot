@@ -44,7 +44,7 @@ ORDER_STEP_SIZE = 100
 INTERVAL = 0.0015
 
 # Minimum spread to maintain, in percent, between asks & bids
-MIN_SPREAD = 0.01
+MIN_SPREAD = 0.005
 
 # If True, market-maker will place orders just inside the existing spread and work the interval % outwards,
 # rather than starting in the middle and killing potentially profitable spreads.
