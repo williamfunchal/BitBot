@@ -48,7 +48,7 @@ MIN_SPREAD = 0.0025
 
 # If True, market-maker will place orders just inside the existing spread and work the interval % outwards,
 # rather than starting in the middle and killing potentially profitable spreads.
-MAINTAIN_SPREADS = True
+MAINTAIN_SPREADS = False
 
 # This number defines far much the price of an existing order can be from a desired order before it is amended.
 # This is useful for avoiding unnecessary calls and maintaining your ratelimits.
@@ -60,7 +60,7 @@ MAINTAIN_SPREADS = True
 # it will be resubmitted.
 #
 # 0.01 == 1%
-RELIST_INTERVAL = 0.0001
+RELIST_INTERVAL = 0.01
 
 
 ########################################################################################################################
