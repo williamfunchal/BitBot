@@ -34,13 +34,13 @@ MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 ########################################################################################################################
 
 # How many pairs of buy/sell orders to keep open
-ORDER_PAIRS = 30
+ORDER_PAIRS = 4
 
 # ORDER_START_SIZE will be the number of contracts submitted on level 1
 # Number of contracts from level 1 to ORDER_PAIRS - 1 will follow the function
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
-ORDER_START_SIZE = 5
-ORDER_STEP_SIZE = 10
+ORDER_START_SIZE = 220
+ORDER_STEP_SIZE = 440
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
 INTERVAL = 0.00025
