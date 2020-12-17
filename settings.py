@@ -24,7 +24,7 @@ API_SECRET = "-eQJgYT_D5v264jd0X2QqaLCL1u8eRUkSw4nu0yr2gSPB85u"
 # Instrument to market make on BitMEX.
 SYMBOL = "XBTUSD"
 
-TARGET_TO_PROFIT = 0.5
+TARGET_TO_PROFIT = 0.05
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
@@ -34,19 +34,19 @@ MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 ########################################################################################################################
 
 # How many pairs of buy/sell orders to keep open
-ORDER_PAIRS = 4
+ORDER_PAIRS = 6
 
 # ORDER_START_SIZE will be the number of contracts submitted on level 1
 # Number of contracts from level 1 to ORDER_PAIRS - 1 will follow the function
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
-ORDER_START_SIZE = 220
-ORDER_STEP_SIZE = 440
+ORDER_START_SIZE = 1
+ORDER_STEP_SIZE = 1
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
 INTERVAL = 0.00025
 
 # Minimum spread to maintain, in percent, between asks & bids
-MIN_SPREAD = 0.0010
+MIN_SPREAD = 0.001
 
 # If True, market-maker will place orders just inside the existing spread and work the interval % outwards,
 # rather than starting in the middle and killing potentially profitable spreads.
@@ -62,7 +62,7 @@ MAINTAIN_SPREADS = False
 # it will be resubmitted.
 #
 # 0.01 == 1%
-RELIST_INTERVAL = 0.001
+RELIST_INTERVAL = 0.0001
 
 
 ########################################################################################################################
