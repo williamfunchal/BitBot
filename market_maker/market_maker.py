@@ -298,12 +298,24 @@ class OrderManager:
     def get_ticker(self):
         ticker = self.exchange.get_ticker()
         tickLog = self.exchange.get_instrument()['tickLog']
+        position = self.exchange.get_position()
+
 
         # Set up our buy & sell positions as the smallest possible unit above and below the current spread
         # and we'll work out from there. That way we always have the best price but we don't kill wide
         # and potentially profitable spreads.
-        self.start_position_buy = ticker["buy"] + self.instrument['tickSize']
-        self.start_position_sell = ticker["sell"] - self.instrument['tickSize']
+        try:
+            if settings.MAINTAIN_ENTRY_PRICE_SPREAD_CENTER == True:
+                self.start_position_buy = position["avgEntryPrice"] + self.instrument['tickSize']
+                self.start_position_sell = position["avgEntryPrice"] - self.instrument['tickSize']
+        except Exception as position_exc:
+            logger.info("no positions Yet! Spread will start on start_position by market value!")
+            self.start_position_buy = ticker["buy"] + self.instrument['tickSize']
+            self.start_position_sell = ticker["sell"] - self.instrument['tickSize']
+        else:
+            if settings.MAINTAIN_ENTRY_PRICE_SPREAD_CENTER == False:
+                self.start_position_buy = ticker["buy"] + self.instrument['tickSize']
+                self.start_position_sell = ticker["sell"] - self.instrument['tickSize']
 
         # If we're maintaining spreads and we already have orders in place,
         # make sure they're not ours. If they are, we need to adjust, otherwise we'll
@@ -313,6 +325,7 @@ class OrderManager:
                 self.start_position_buy = ticker["buy"]
             if ticker['sell'] == self.exchange.get_lowest_sell()['price']:
                 self.start_position_sell = ticker["sell"]
+            
 
         # Back off if our spread is too small.
         if self.start_position_buy * (1.00 + settings.MIN_SPREAD) > self.start_position_sell:
@@ -503,12 +516,14 @@ class OrderManager:
         ticker = self.get_ticker()
 
         # Sanity check:
+        """/*
         if self.get_price_offset(-1) >= ticker["sell"] or self.get_price_offset(1) <= ticker["buy"]:
             logger.error("Buy: %s, Sell: %s" % (self.start_position_buy, self.start_position_sell))
             logger.error("First buy position: %s\nBitMEX Best Ask: %s\nFirst sell position: %s\nBitMEX Best Bid: %s" %
                          (self.get_price_offset(-1), ticker["sell"], self.get_price_offset(1), ticker["buy"]))
             logger.error("Sanity check failed, exchange data is inconsistent")
             self.exit()
+       """
 
         # Messaging if the position limits are reached
         if self.long_position_limit_exceeded():
