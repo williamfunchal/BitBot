@@ -24,7 +24,9 @@ API_SECRET = "-eQJgYT_D5v264jd0X2QqaLCL1u8eRUkSw4nu0yr2gSPB85u"
 # Instrument to market make on BitMEX.
 SYMBOL = "XBTUSD"
 
-TARGET_TO_PROFIT = 0.05
+TARGET_TO_PROFIT = 0.015
+
+TAKE_PROFIT_TRIGGER = 600
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
@@ -39,14 +41,14 @@ ORDER_PAIRS = 6
 # ORDER_START_SIZE will be the number of contracts submitted on level 1
 # Number of contracts from level 1 to ORDER_PAIRS - 1 will follow the function
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
-ORDER_START_SIZE = 1
-ORDER_STEP_SIZE = 1
+ORDER_START_SIZE = 20
+ORDER_STEP_SIZE = 40
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
-INTERVAL = 0.00025
+INTERVAL = 0.003
 
 # Minimum spread to maintain, in percent, between asks & bids
-MIN_SPREAD = 0.001
+MIN_SPREAD = 0.005
 
 # If True, market-maker will place orders just inside the existing spread and work the interval % outwards,
 # rather than starting in the middle and killing potentially profitable spreads.
@@ -62,7 +64,7 @@ MAINTAIN_SPREADS = False
 # it will be resubmitted.
 #
 # 0.01 == 1%
-RELIST_INTERVAL = 0.0001
+RELIST_INTERVAL = 0.001
 
 
 ########################################################################################################################
@@ -72,8 +74,8 @@ RELIST_INTERVAL = 0.0001
 # Position limits - set to True to activate. Values are in contracts.
 # If you exceed a position limit, the bot will log and stop quoting that side.
 CHECK_POSITION_LIMITS = False
-MIN_POSITION = -4999
-MAX_POSITION = 4999
+MIN_POSITION = -1600
+MAX_POSITION = 1600
 
 # If True, will only send orders that rest in the book (ExecInst: ParticipateDoNotInitiate).
 # Use to guarantee a maker rebate.
@@ -95,9 +97,9 @@ DRY_RUN = False
 LOOP_INTERVAL = 2.0
 
 # Wait times between orders / errors
-API_REST_INTERVAL = 1
-API_ERROR_INTERVAL = 1
-TIMEOUT = 1
+API_REST_INTERVAL = 3
+API_ERROR_INTERVAL = 3
+TIMEOUT = 7
 
 # If we're doing a dry run, use these numbers for BTC balances
 DRY_BTC = 50

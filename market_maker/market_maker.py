@@ -210,6 +210,7 @@ class OrderManager:
     def __init__(self):
         self.exchange = ExchangeInterface(settings.DRY_RUN)
         self.max_profit = float(settings.TARGET_TO_PROFIT)
+        self.take_profit_trigger = float(settings.TAKE_PROFIT_TRIGGER)
         self.trailling = False
         # Once exchange is created, register exit handler that will always cancel orders
         # on any error.
@@ -268,26 +269,33 @@ class OrderManager:
         pnl = position['unrealisedGrossPnl']
         qty = position['currentQty']
 
+        is_buy_position = False
+        is_sell_position = False       
+        
+
         logger.info("Target ROE: %.*f" % (tickLog, float(self.max_profit)))
 
+        if qty < 0: 
+            is_sell_position = True           
+        
+        if (is_sell_position == True and (self.take_profit_trigger * -1) > qty ) or (is_sell_position == False and self.take_profit_trigger > qty ):
+            if  self.trailling == False and self.max_profit < roe:     
+                self.trailling = True
+                self.max_profit = roe
+                return True
 
-        if  self.trailling == False and self.max_profit < roe :
-            self.trailling = True
-            self.max_profit = roe
-            return True
+            if self.trailling == True and self.max_profit < roe :
+                self.max_profit = roe
+                logger.info("Trailling: %.*f" % (tickLog, float(self.max_profit)))
+                return True
 
-        if self.trailling == True and self.max_profit < roe :
-            self.max_profit = roe
-            logger.info("Trailling: %.*f" % (tickLog, float(self.max_profit)))
-            return True
-
-        if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
-            logger.info("Aproximated realized PNL: %.*f" % (tickLog, float(pnl))) 
-            self.exchange.close_position(float(qty) * -1)
-            logger.info("ROE realized: %.*f" % (tickLog, float(roe)))
-            self.trailling = False
-            self.max_profit = float(settings.TARGET_TO_PROFIT)
-            return True
+            if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
+                logger.info("Aproximated realized PNL: %.*f" % (tickLog, float(pnl))) 
+                self.exchange.close_position(float(qty) * -1)
+                logger.info("ROE realized: %.*f" % (tickLog, float(roe)))
+                self.trailling = False
+                self.max_profit = float(settings.TARGET_TO_PROFIT)
+                return True
             
         
         logger.info("Unrealised PNL: %.*f" % (tickLog, float(pnl)))
@@ -578,7 +586,7 @@ class OrderManager:
 
             self.sanity_check()  # Ensures health of mm - several cut-out points here
             self.print_status()  # Print skew, delta, etc
-            #self.verify_profit() # Realize if are profitble
+            self.verify_profit() # Realize if are profitble
             self.place_orders()  # Creates desired orders and converges to existing orders
 
     def restart(self):
