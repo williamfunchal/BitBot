@@ -24,9 +24,9 @@ API_SECRET = "-eQJgYT_D5v264jd0X2QqaLCL1u8eRUkSw4nu0yr2gSPB85u"
 # Instrument to market make on BitMEX.
 SYMBOL = "XBTUSD"
 
-TARGET_TO_PROFIT = 0.015
+TARGET_TO_PROFIT = 0.15
 
-TAKE_PROFIT_TRIGGER = 600
+TAKE_PROFIT_TRIGGER = 1000
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
@@ -41,14 +41,14 @@ ORDER_PAIRS = 6
 # ORDER_START_SIZE will be the number of contracts submitted on level 1
 # Number of contracts from level 1 to ORDER_PAIRS - 1 will follow the function
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
-ORDER_START_SIZE = 20
-ORDER_STEP_SIZE = 40
+ORDER_START_SIZE = 250
+ORDER_STEP_SIZE = 1
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
-INTERVAL = 0.003
+INTERVAL = 0.005
 
 # Minimum spread to maintain, in percent, between asks & bids
-MIN_SPREAD = 0.005
+MIN_SPREAD = 0.0015
 
 # If True, market-maker will place orders just inside the existing spread and work the interval % outwards,
 # rather than starting in the middle and killing potentially profitable spreads.
@@ -94,7 +94,7 @@ DRY_RUN = False
 # How often to re-check and replace orders.
 # Generally, it's safe to make this short because we're fetching from websockets. But if too many
 # order amend/replaces are done, you may hit a ratelimit. If so, email BitMEX if you feel you need a higher limit.
-LOOP_INTERVAL = 2.0
+LOOP_INTERVAL = 3.0
 
 # Wait times between orders / errors
 API_REST_INTERVAL = 3
