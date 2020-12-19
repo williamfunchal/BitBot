@@ -434,7 +434,7 @@ class OrderManager:
 
                 # Found an existing order. Do we need to amend it?
                 if desired_order['orderQty'] != order['leavesQty'] or (
-                        # If price has changed, and the change is more than our RELIST_INTERVAL, amend.
+                        # If price has changed, and the change is more than our RELIST_INTERVAL, amend.                        
                         desired_order['price'] != order['price'] and
                         abs((desired_order['price'] / order['price']) - 1) > settings.RELIST_INTERVAL):
                     to_amend.append({'orderID': order['orderID'], 'orderQty': order['cumQty'] + desired_order['orderQty'],
@@ -444,11 +444,13 @@ class OrderManager:
                 to_cancel.append(order)
 
         while buys_matched < len(buy_orders):
-            to_create.append(buy_orders[buys_matched])
+            if buy_orders[buys_matched]['price'] < self.get_ticker()['mid']:
+                to_create.append(buy_orders[buys_matched])
             buys_matched += 1
 
         while sells_matched < len(sell_orders):
-            to_create.append(sell_orders[sells_matched])
+            if sell_orders[sells_matched]['price'] > self.get_ticker()['mid']  :
+                to_create.append(sell_orders[sells_matched])
             sells_matched += 1
 
         if len(to_amend) > 0:
