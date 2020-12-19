@@ -209,8 +209,8 @@ class OrderManager:
 
     def __init__(self):
         self.exchange = ExchangeInterface(settings.DRY_RUN)
-        self.max_profit = float(settings.TARGET_TO_PROFIT)
-        self.take_profit_trigger = float(settings.TAKE_PROFIT_TRIGGER)
+        self.max_profit = settings.TARGET_TO_PROFIT
+        self.take_profit_trigger = settings.TAKE_PROFIT_TRIGGER
         self.trailling = False
         # Once exchange is created, register exit handler that will always cancel orders
         # on any error.
