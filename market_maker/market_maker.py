@@ -197,6 +197,11 @@ class ExchangeInterface:
             return orders
         return self.bitmex.create_bulk_orders(orders)
 
+    def place_order(self,quantity,price):
+        if self.dry_run:
+            return
+        return self.bitmex.place_order(quantity,price)
+
     def cancel_bulk_orders(self, orders):
         if self.dry_run:
             return orders
@@ -212,6 +217,7 @@ class OrderManager:
         self.max_profit = settings.TARGET_TO_PROFIT
         self.take_profit_trigger = settings.TAKE_PROFIT_TRIGGER
         self.trailling = False
+        self.position_start_entry_qty = float(settings.POSITION_START_ENTRY_QTY)
         # Once exchange is created, register exit handler that will always cancel orders
         # on any error.
         atexit.register(self.exit)
@@ -262,6 +268,8 @@ class OrderManager:
         """Verify profit and Close Position at market Price"""        
 
         position = self.exchange.get_position()
+        position_start_entry_qty = self.position_start_entry_qty
+        ticker = ticker = self.exchange.get_ticker()
         tickLog = self.exchange.get_instrument()['tickLog']
 
         roe = position['unrealisedRoePcnt']
@@ -275,10 +283,14 @@ class OrderManager:
 
         logger.info("Target ROE: %.*f" % (tickLog, float(self.max_profit)))
 
+        if qty == 0:
+            self.exchange.place_order(position_start_entry_qty, ticker['mid'])
+
+
         if qty < 0: 
             is_sell_position = True           
         
-        if (is_sell_position == True and (self.take_profit_trigger * -1) > qty ) or (is_sell_position == False and self.take_profit_trigger > qty ):
+        if (is_sell_position == True and (self.take_profit_trigger * -1) > qty ) or (is_sell_position == False and self.take_profit_trigger < qty ):
             if  self.trailling == False and self.max_profit < roe:     
                 self.trailling = True
                 self.max_profit = roe
@@ -291,7 +303,8 @@ class OrderManager:
 
             if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
                 logger.info("Aproximated realized PNL: %.*f" % (tickLog, float(pnl))) 
-                self.exchange.close_position(float(qty) * -1)
+                #self.exchange.close_position(float(qty) * -1)
+                self.exchange.place_order(float(qty) * -1, ticker['mid'])
                 logger.info("ROE realized: %.*f" % (tickLog, float(roe)))
                 self.trailling = False
                 self.max_profit = float(settings.TARGET_TO_PROFIT)
