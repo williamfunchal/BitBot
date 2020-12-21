@@ -26,11 +26,11 @@ SYMBOL = "XBTUSD"
 
 TARGET_TO_PROFIT = 0.15
 
-TAKE_PROFIT_TRIGGER = 100
+TAKE_PROFIT_TRIGGER = 1
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = -30.0
+POSITION_START_ENTRY_QTY = 1.0
 
 
 ########################################################################################################################
@@ -47,7 +47,7 @@ ORDER_START_SIZE = 1
 ORDER_STEP_SIZE = 2
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
-INTERVAL = 0.0007
+INTERVAL = 0.004
 
 # Minimum spread to maintain, in percent, between asks & bids
 MIN_SPREAD = 0.002
