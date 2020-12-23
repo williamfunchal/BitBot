@@ -303,8 +303,8 @@ class OrderManager:
 
             if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
                 logger.info("Aproximated realized PNL: %.*f" % (tickLog, float(pnl))) 
-                #self.exchange.close_position(float(qty) * -1)
-                self.exchange.place_order(float(qty) * -1, ticker['sell'])
+                self.exchange.close_position(float(qty) * -1)
+                #self.exchange.place_order(float(qty) * -1, ticker['sell'])
                 logger.info("ROE realized: %.*f" % (tickLog, float(roe)))
                 self.trailling = False
                 self.max_profit = float(settings.TARGET_TO_PROFIT)
