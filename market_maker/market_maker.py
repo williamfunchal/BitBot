@@ -457,13 +457,15 @@ class OrderManager:
                 to_cancel.append(order)
 
         while buys_matched < len(buy_orders):
-            if buy_orders[buys_matched]['price'] < self.get_ticker()['mid']:
+            if settings.MAINTAIN_SPREADS == True:
+                if buy_orders[buys_matched]['price'] < self.get_ticker()['mid']: to_create.append(buy_orders[buys_matched])
+            else:
                 to_create.append(buy_orders[buys_matched])
             buys_matched += 1
 
         while sells_matched < len(sell_orders):
-            if sell_orders[sells_matched]['price'] > self.get_ticker()['mid']  :
-                to_create.append(sell_orders[sells_matched])
+            #if sell_orders[sells_matched]['price'] > self.get_ticker()['mid']  :
+            to_create.append(sell_orders[sells_matched])
             sells_matched += 1
 
         if len(to_amend) > 0:
