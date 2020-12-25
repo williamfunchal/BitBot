@@ -30,7 +30,7 @@ TAKE_PROFIT_TRIGGER = 100
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = 100.0
+POSITION_START_ENTRY_QTY = 2000.0
 
 
 ########################################################################################################################
