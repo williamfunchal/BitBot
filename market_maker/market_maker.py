@@ -464,8 +464,10 @@ class OrderManager:
             buys_matched += 1
 
         while sells_matched < len(sell_orders):
-            #if sell_orders[sells_matched]['price'] > self.get_ticker()['mid']  :
-            to_create.append(sell_orders[sells_matched])
+            if settings.MAINTAIN_SPREADS == True:
+                if sell_orders[sells_matched]['price'] > self.get_ticker()['mid']: to_create.append(sell_orders[sells_matched])
+            else:
+                to_create.append(sell_orders[sells_matched])            
             sells_matched += 1
 
         if len(to_amend) > 0:
