@@ -76,8 +76,8 @@ RELIST_INTERVAL = 0.01
 # Position limits - set to True to activate. Values are in contracts.
 # If you exceed a position limit, the bot will log and stop quoting that side.
 CHECK_POSITION_LIMITS = False
-MIN_POSITION = -750
-MAX_POSITION = 750
+MIN_POSITION = -3000
+MAX_POSITION = 3000
 
 # If True, will only send orders that rest in the book (ExecInst: ParticipateDoNotInitiate).
 # Use to guarantee a maker rebate.
