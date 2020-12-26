@@ -275,6 +275,7 @@ class OrderManager:
         position_start_entry_qty = self.position_start_entry_qty
         ticker = ticker = self.exchange.get_ticker()
         tickLog = self.exchange.get_instrument()['tickLog']
+        entry_price = position["avgEntryPrice"]
 
         roe = position['unrealisedRoePcnt']
         pnl_percent = position['unrealisedPnlPcnt']
@@ -319,10 +320,11 @@ class OrderManager:
                 self.max_profit = float(settings.TARGET_TO_PROFIT)
                 return True
 
-        if (is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION):
+        #This uses ProfitLimit 
+        """ if (is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION):
             if self.stop_placed == False:
                 stop_qty = round((float(qty) * -1) / 3 , 0)        
-                entry_price = round(position["avgEntryPrice"],1)        
+                        
                 if stop_qty > 0 : 
                     exec_price =  entry_price - 1
                 if stop_qty < 0 : 
@@ -331,9 +333,26 @@ class OrderManager:
                 logger.info("Creating stop at: %.*f" % (2, float(exec_price))) 
                 self.stop_placed = True
                 self.max_profit = float(settings.TARGET_TO_PROFIT)
+                return True """
+
+        if self.stop_placed == True:
+            stop_qty = round((float(qty) * -1) / 3 , 0) 
+            if stop_qty > 0 : 
+                if ticker['buy'] < entry_price:
+                    self.trailling = True
+                    self.max_profit = roe
+            if stop_qty < 0 : 
+                if ticker['sell'] > entry_price:
+                    self.trailling = True
+                    self.max_profit = roe
+            self.stop_placed = False
+            return True
+            
+        if ((is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION)) and self.trailling == False:
+            if self.stop_placed == False:
+                self.stop_placed = True
                 return True
 
-            
         
         logger.info("Unrealised PNL: %.*f" % (2, float(pnl)))
         logger.info("Unrealized ROE: %.*f" % (5, roe))
