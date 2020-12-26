@@ -162,6 +162,26 @@ class BitMEX(object):
         return self._curl_bitmex(path=endpoint, postdict=postdict, verb="POST")
 
     @authentication_required
+    def place_stop_limit(self, quantity, price, trigger_price):
+        """Place a Stop Limit with a Trigger to place an order"""
+        if price < 0:
+            raise Exception("Price must be positive.")
+        if trigger_price < 0:
+            raise Exception("Trigger Price must be positive.")
+
+        endpoint = "order"
+        postdict = {
+            'symbol': self.symbol,
+            'orderQty': quantity,
+            'ordType' : 'StopLimit',
+            'stopPx' : trigger_price,
+            'price': price
+        }
+        return self._curl_bitmex(path=endpoint, postdict=postdict, verb="POST")
+
+
+
+    @authentication_required
     def close_position(self, quantity):
         """Place an close position order."""
         

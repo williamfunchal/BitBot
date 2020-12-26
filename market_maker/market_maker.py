@@ -166,6 +166,9 @@ class ExchangeInterface:
             symbol = self.symbol
         return self.bitmex.close_position(quantity)
 
+    def stop_limit(self, quantity, price, trigger_price):        
+        return self.bitmex.place_stop_limit(quantity, price, trigger_price)
+
     def get_ticker(self, symbol=None):
         if symbol is None:
             symbol = self.symbol
@@ -217,6 +220,7 @@ class OrderManager:
         self.max_profit = settings.TARGET_TO_PROFIT
         self.take_profit_trigger = settings.TAKE_PROFIT_TRIGGER
         self.trailling = False
+        self.stop_placed = False
         self.position_start_entry_qty = float(settings.POSITION_START_ENTRY_QTY)
         # Once exchange is created, register exit handler that will always cancel orders
         # on any error.
@@ -285,6 +289,7 @@ class OrderManager:
 
         if qty == 0:
             self.exchange.place_order(position_start_entry_qty, ticker['mid'])
+            self.stop_placed = False
 
 
         if qty < 0: 
@@ -302,18 +307,37 @@ class OrderManager:
                 return True
 
             if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
-                logger.info("Aproximated realized PNL: %.*f" % (tickLog, float(pnl))) 
-                self.exchange.close_position(float(qty) * -1)
-                #self.exchange.place_order(float(qty) * -1, ticker['sell'])
-                logger.info("ROE realized: %.*f" % (tickLog, float(roe)))
+                logger.info("Aproximated realized PNL: %.*f" % (3, float(pnl))) 
+                #self.exchange.close_position(float(qty) * -1)
+                stop_qty = float(qty) * -1                
+                if stop_qty > 0 : stop_ticker = ticker['buy']
+                if stop_qty < 0 : stop_ticker = ticker['sell']
+                self.exchange.place_order(stop_qty, stop_ticker)
+                #self.exchange.stop_limit(stop_qty,stop_ticker,stop_ticker)
+                logger.info("ROE realized: %.*f" % (3, float(roe)))
                 self.trailling = False
                 self.max_profit = float(settings.TARGET_TO_PROFIT)
                 return True
+
+        if (is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION):
+            if self.stop_placed == False:
+                stop_qty = round((float(qty) * -1) / 2 , 0)        
+                entry_price = round(position["avgEntryPrice"],1)        
+                if stop_qty > 0 : 
+                    exec_price =  entry_price - 15
+                if stop_qty < 0 : 
+                    exec_price = entry_price + 15
+                self.exchange.stop_limit(stop_qty,exec_price,entry_price)
+                logger.info("Creating stop at: %.*f" % (3, float(stop_ticker))) 
+                self.stop_placed = True
+                self.max_profit = float(settings.TARGET_TO_PROFIT)
+                return True
+
             
         
-        logger.info("Unrealised PNL: %.*f" % (tickLog, float(pnl)))
-        logger.info("Unrealized ROE: %.*f" % (tickLog, float(roe)))
-        logger.info("Unrealized PNL percent: %.*f" % (tickLog, float(pnl_percent)))
+        logger.info("Unrealised PNL: %.*f" % (2, float(pnl)))
+        logger.info("Unrealized ROE: %.*f" % (3, roe))
+        logger.info("Unrealized PNL percent: %.*f" % (3, float(pnl_percent)))
 
 
     def get_ticker(self):
@@ -325,10 +349,10 @@ class OrderManager:
         # Set up our buy & sell positions as the smallest possible unit above and below the current spread
         # and we'll work out from there. That way we always have the best price but we don't kill wide
         # and potentially profitable spreads.
-        try:
+        """ try:
             if settings.MAINTAIN_ENTRY_PRICE_SPREAD_CENTER == True:
-                self.start_position_buy = position["avgEntryPrice"] + self.instrument['tickSize']
-                self.start_position_sell = position["avgEntryPrice"] - self.instrument['tickSize']
+                self.start_position_buy = float(position["avgEntryPrice"]) + float(self.instrument['tickSize'])
+                self.start_position_sell = float(position["avgEntryPrice"]) - float(self.instrument['tickSize'])
         except Exception as position_exc:
             logger.info("no positions Yet! Spread will start on start_position by market value!")
             self.start_position_buy = ticker["buy"] + self.instrument['tickSize']
@@ -336,7 +360,10 @@ class OrderManager:
         else:
             if settings.MAINTAIN_ENTRY_PRICE_SPREAD_CENTER == False:
                 self.start_position_buy = ticker["buy"] + self.instrument['tickSize']
-                self.start_position_sell = ticker["sell"] - self.instrument['tickSize']
+                self.start_position_sell = ticker["sell"] - self.instrument['tickSize'] """
+
+        self.start_position_buy = ticker["buy"] + self.instrument['tickSize']
+        self.start_position_sell = ticker["sell"] - self.instrument['tickSize']
 
         # If we're maintaining spreads and we already have orders in place,
         # make sure they're not ours. If they are, we need to adjust, otherwise we'll
@@ -457,17 +484,19 @@ class OrderManager:
                 to_cancel.append(order)
 
         while buys_matched < len(buy_orders):
-            if settings.MAINTAIN_SPREADS == True:
-                if buy_orders[buys_matched]['price'] < self.get_ticker()['mid']: to_create.append(buy_orders[buys_matched])
-            else:
-                to_create.append(buy_orders[buys_matched])
+            #if settings.MAINTAIN_SPREADS == True:
+            #if buy_orders[buys_matched]['price'] < self.get_ticker()['mid']: 
+            to_create.append(buy_orders[buys_matched])
+            #else:
+                #to_create.append(buy_orders[buys_matched])            
             buys_matched += 1
 
         while sells_matched < len(sell_orders):
-            if settings.MAINTAIN_SPREADS == True:
-                if sell_orders[sells_matched]['price'] > self.get_ticker()['mid']: to_create.append(sell_orders[sells_matched])
-            else:
-                to_create.append(sell_orders[sells_matched])            
+            #if settings.MAINTAIN_SPREADS == True:
+            #if sell_orders[sells_matched]['price'] > self.get_ticker()['mid']: 
+            to_create.append(sell_orders[sells_matched])
+            #else:
+                #to_create.append(sell_orders[sells_matched])            
             sells_matched += 1
 
         if len(to_amend) > 0:
@@ -542,15 +571,14 @@ class OrderManager:
         # Get ticker, which sets price offsets and prints some debugging info.
         ticker = self.get_ticker()
 
-        # Sanity check:
-        """/*
+        # Sanity check:        
         if self.get_price_offset(-1) >= ticker["sell"] or self.get_price_offset(1) <= ticker["buy"]:
             logger.error("Buy: %s, Sell: %s" % (self.start_position_buy, self.start_position_sell))
             logger.error("First buy position: %s\nBitMEX Best Ask: %s\nFirst sell position: %s\nBitMEX Best Bid: %s" %
                          (self.get_price_offset(-1), ticker["sell"], self.get_price_offset(1), ticker["buy"]))
             logger.error("Sanity check failed, exchange data is inconsistent")
             self.exit()
-       """
+      
 
         # Messaging if the position limits are reached
         if self.long_position_limit_exceeded():
