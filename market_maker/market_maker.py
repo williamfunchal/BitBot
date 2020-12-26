@@ -321,14 +321,14 @@ class OrderManager:
 
         if (is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION):
             if self.stop_placed == False:
-                stop_qty = round((float(qty) * -1) / 2 , 0)        
+                stop_qty = round((float(qty) * -1) / 3 , 0)        
                 entry_price = round(position["avgEntryPrice"],1)        
                 if stop_qty > 0 : 
-                    exec_price =  entry_price - 15
+                    exec_price =  entry_price - 1
                 if stop_qty < 0 : 
-                    exec_price = entry_price + 15
+                    exec_price = entry_price + 1
                 self.exchange.stop_limit(stop_qty,exec_price,entry_price)
-                logger.info("Creating stop at: %.*f" % (3, float(stop_ticker))) 
+                logger.info("Creating stop at: %.*f" % (2, float(exec_price))) 
                 self.stop_placed = True
                 self.max_profit = float(settings.TARGET_TO_PROFIT)
                 return True
@@ -336,8 +336,8 @@ class OrderManager:
             
         
         logger.info("Unrealised PNL: %.*f" % (2, float(pnl)))
-        logger.info("Unrealized ROE: %.*f" % (3, roe))
-        logger.info("Unrealized PNL percent: %.*f" % (3, float(pnl_percent)))
+        logger.info("Unrealized ROE: %.*f" % (5, roe))
+        logger.info("Unrealized PNL percent: %.*f" % (5, float(pnl_percent)))
 
 
     def get_ticker(self):
