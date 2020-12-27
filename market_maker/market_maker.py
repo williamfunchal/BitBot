@@ -348,7 +348,7 @@ class OrderManager:
             self.stop_placed = False
             return True
             
-        if ((is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION)) and self.trailling == False:
+        if ((is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION)) and self.trailling == False and roe < -0.1:
             if self.stop_placed == False:
                 self.stop_placed = True
                 return True
