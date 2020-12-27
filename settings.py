@@ -24,13 +24,13 @@ API_SECRET = "-eQJgYT_D5v264jd0X2QqaLCL1u8eRUkSw4nu0yr2gSPB85u"
 # Instrument to market make on BitMEX.
 SYMBOL = "XBTUSD"
 
-TARGET_TO_PROFIT = 0.075
+TARGET_TO_PROFIT = 0.15
 
-TAKE_PROFIT_TRIGGER = 100
+TAKE_PROFIT_TRIGGER = 3000
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = 500
+POSITION_START_ENTRY_QTY = 3000
 
 
 ########################################################################################################################
@@ -76,8 +76,8 @@ RELIST_INTERVAL = 0.01
 # Position limits - set to True to activate. Values are in contracts.
 # If you exceed a position limit, the bot will log and stop quoting that side.
 CHECK_POSITION_LIMITS = False
-MIN_POSITION = -3000
-MAX_POSITION = 3000
+MIN_POSITION = -6000
+MAX_POSITION = 6000
 
 # If True, will only send orders that rest in the book (ExecInst: ParticipateDoNotInitiate).
 # Use to guarantee a maker rebate.
