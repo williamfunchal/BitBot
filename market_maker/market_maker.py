@@ -294,35 +294,34 @@ class OrderManager:
         is_sell_position = False       
         
 
-        logger.info("Target ROE: %.*f" % (tickLog, float(self.max_profit)))
+        logger.info("Target ROE: %.*f" % (5, float(self.max_profit)))
 
         
         if qty < 0: 
             is_sell_position = True           
         
-        if (is_sell_position == True and (self.take_profit_trigger * -1) > qty ) or (is_sell_position == False and self.take_profit_trigger < qty ):
-            if  self.trailling == False and self.max_profit < roe:     
-                self.trailling = True
-                self.max_profit = roe
-                return True
+        #if (is_sell_position == True and (self.take_profit_trigger * -1) > qty ) or (is_sell_position == False and self.take_profit_trigger < qty ):
+        if  self.trailling == False and self.max_profit < roe:     
+            self.trailling = True
+            self.max_profit = roe
+            return True
 
-            if self.trailling == True and self.max_profit < roe :
-                self.max_profit = roe
-                logger.info("Trailling: %.*f" % (tickLog, float(self.max_profit)))
-                return True
+        if self.trailling == True and self.max_profit < roe :
+            self.max_profit = roe            
+            return True
 
-            if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
-                logger.info("Aproximated realized PNL: %.*f" % (3, float(pnl))) 
-                self.exchange.close_position(float(qty) * -1)
-                """ stop_qty = float(qty) * -1                
-                if stop_qty > 0 : stop_ticker = ticker['buy']
-                if stop_qty < 0 : stop_ticker = ticker['sell']
-                self.exchange.place_order(stop_qty, stop_ticker)
-                #self.exchange.stop_limit(stop_qty,stop_ticker,stop_ticker) """
-                logger.info("ROE realized: %.*f" % (3, float(roe)))
-                self.trailling = False
-                self.max_profit = float(settings.TARGET_TO_PROFIT)
-                return True
+        if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
+            logger.info("Aproximated realized PNL: %.*f" % (3, float(pnl))) 
+            self.exchange.close_position(float(qty) * -1)
+            """ stop_qty = float(qty) * -1                
+            if stop_qty > 0 : stop_ticker = ticker['buy']
+            if stop_qty < 0 : stop_ticker = ticker['sell']
+            self.exchange.place_order(stop_qty, stop_ticker)
+            #self.exchange.stop_limit(stop_qty,stop_ticker,stop_ticker) """
+            logger.info("ROE realized: %.*f" % (3, float(roe)))
+            self.trailling = False
+            self.max_profit = float(settings.TARGET_TO_PROFIT)
+            return True
 
         #This uses ProfitLimit 
         """ if (is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION):
@@ -357,7 +356,9 @@ class OrderManager:
                 self.stop_placed = True
                 return True
 
-        
+        if self.trailling:
+            logger.info("Trailling: %.*f" % (tickLog, float(self.max_profit)))
+
         logger.info("Unrealised PNL: %.*f" % (2, float(pnl)))
         logger.info("Unrealized ROE: %.*f" % (5, roe))
         logger.info("Unrealized PNL percent: %.*f" % (5, float(pnl_percent)))
