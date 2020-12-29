@@ -448,7 +448,7 @@ class OrderManager:
         buy_orders = []
         sell_orders = []
         position = self.exchange.get_position()
-        entry_price = entry_price = position["avgEntryPrice"]
+        entry_price = position["avgEntryPrice"]
         # Create orders from the outside in. This is intentional - let's say the inner order gets taken;
         # then we match orders from the outside in, ensuring the fewest number of orders are amended and only
         # a new order is created in the inside. If we did it inside-out, all orders would be amended
@@ -456,11 +456,11 @@ class OrderManager:
         for i in reversed(range(1, settings.ORDER_PAIRS + 1)):
             if not self.long_position_limit_exceeded():
                 order = self.prepare_order(-i)
-                if order['price'] < entry_price:
+                if entry_price != None and order['price'] < entry_price:
                     buy_orders.append(order)
             if not self.short_position_limit_exceeded():
                 order = self.prepare_order(i)
-                if order['price'] > entry_price:
+                if entry_price != None and order['price'] > entry_price:
                     sell_orders.append(order)
 
         return self.converge_orders(buy_orders, sell_orders)
