@@ -267,12 +267,20 @@ class OrderManager:
         logger.info("Contracts Traded This Run: %d" % (self.running_qty - self.starting_qty))
         logger.info("Total Contract Delta: %.4f XBT" % self.exchange.calc_delta()['spot'])        
         
+    def initialize_position(self):
+        ticker = ticker = self.exchange.get_ticker()
+        position = self.exchange.get_position()
+        position_start_entry_qty = self.position_start_entry_qty
+        qty = position['currentQty']
+        if qty == 0:
+            self.exchange.place_order(position_start_entry_qty, ticker['mid'])
+            self.stop_placed = False
+
 
     def verify_profit(self):
         """Verify profit and Close Position at market Price"""        
 
         position = self.exchange.get_position()
-        position_start_entry_qty = self.position_start_entry_qty
         ticker = ticker = self.exchange.get_ticker()
         tickLog = self.exchange.get_instrument()['tickLog']
         entry_price = position["avgEntryPrice"]
@@ -288,11 +296,7 @@ class OrderManager:
 
         logger.info("Target ROE: %.*f" % (tickLog, float(self.max_profit)))
 
-        if qty == 0:
-            self.exchange.place_order(position_start_entry_qty, ticker['mid'])
-            self.stop_placed = False
-
-
+        
         if qty < 0: 
             is_sell_position = True           
         
@@ -658,8 +662,9 @@ class OrderManager:
 
             self.sanity_check()  # Ensures health of mm - several cut-out points here
             self.print_status()  # Print skew, delta, etc
-            self.verify_profit() # Realize if are profitble
+            self.initialize_position() #Initialize a position
             self.place_orders()  # Creates desired orders and converges to existing orders
+            self.verify_profit() # Realize if are profitble
 
     def restart(self):
         logger.info("Restarting the market maker...")
