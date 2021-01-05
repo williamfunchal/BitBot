@@ -19,8 +19,7 @@ class Alert(Resource):
         return "RSI: {}".format(args["value"]), 200
 
 api.add_resource(Alert,"/alerts")
-
-t = threading.Thread(target=app.run)
+t = threading.Thread(target=app.run, kwargs=dict(host='0.0.0.0', port=80))
 t.daemon = True
 t.start()
 
