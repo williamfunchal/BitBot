@@ -6,7 +6,6 @@ import shutil
 
 __version__ = 'v1.5.1'
 
-
 def run():
     parser = argparse.ArgumentParser(description='sample BitMEX market maker')
     parser.add_argument('command', nargs='?', help='Instrument symbol on BitMEX or "setup" for first-time config')
@@ -35,3 +34,5 @@ def copy_files():
         print('Created marketmaker project.\n**** \nImportant!!!\nEdit settings.py before starting the bot.\n****')
     except FileExistsError:
         print('Market Maker project already exists!')
+
+

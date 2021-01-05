@@ -21,6 +21,7 @@ watched_files_mtimes = [(f, getmtime(f)) for f in settings.WATCHED_FILES]
 # Helpers
 #
 logger = log.setup_custom_logger('root')
+rsi = 50
 
 
 class ExchangeInterface:
@@ -271,9 +272,12 @@ class OrderManager:
         ticker = ticker = self.exchange.get_ticker()
         position = self.exchange.get_position()
         position_start_entry_qty = self.position_start_entry_qty
+        if(rsi < 50):
+            position_start_entry_qty *= -1
         qty = position['currentQty']
-        if qty == 0:
-            self.exchange.place_order(position_start_entry_qty, ticker['mid'])
+        if qty == 0: 
+            if rsi != 50:
+                self.exchange.place_order(position_start_entry_qty, ticker['mid'])
             self.stop_placed = False
 
 
@@ -699,3 +703,4 @@ def run():
         om.run_loop()
     except (KeyboardInterrupt, SystemExit):
         sys.exit()
+
