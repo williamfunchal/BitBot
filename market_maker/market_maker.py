@@ -166,6 +166,8 @@ class ExchangeInterface:
         return self.bitmex.position(symbol)
 
     def close_position(self, quantity, symbol=None):
+        if self.dry_run:
+            return
         if symbol is None:
             symbol = self.symbol
         return self.bitmex.close_position(quantity)
