@@ -30,7 +30,7 @@ TARGET_TO_PROFIT = 0.15
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = 100
+POSITION_START_ENTRY_QTY = 10
 
 
 ########################################################################################################################
@@ -43,8 +43,8 @@ ORDER_PAIRS = 4
 # ORDER_START_SIZE will be the number of contracts submitted on level 1
 # Number of contracts from level 1 to ORDER_PAIRS - 1 will follow the function
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
-ORDER_START_SIZE = 20
-ORDER_STEP_SIZE = 10
+ORDER_START_SIZE = 2
+ORDER_STEP_SIZE = 1
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
 INTERVAL = 0.0015
@@ -76,8 +76,8 @@ RELIST_INTERVAL = 0.01
 # Position limits - set to True to activate. Values are in contracts.
 # If you exceed a position limit, the bot will log and stop quoting that side.
 CHECK_POSITION_LIMITS = False
-MIN_POSITION = -200
-MAX_POSITION = 200
+MIN_POSITION = -10
+MAX_POSITION = 10
 
 # If True, will only send orders that rest in the book (ExecInst: ParticipateDoNotInitiate).
 # Use to guarantee a maker rebate.

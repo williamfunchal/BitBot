@@ -9,7 +9,7 @@ api = Api(app)
 
 
 
-class Alert(Resource):
+class RSI(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument("value")
@@ -18,7 +18,18 @@ class Alert(Resource):
         market_maker.logger.info("RSI: {}".format(market_maker.rsi))
         return "RSI: {}".format(args["value"]), 200
 
-api.add_resource(Alert,"/alerts")
+class MACD(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("value")
+        args = parser.parse_args()
+        market_maker.macd_histogram = float(args["value"])
+
+        market_maker.logger.info("MACD: {}".format(market_maker.macd_histogram))
+        return "MACD: {}".format(args["value"]), 200
+
+api.add_resource(RSI,"/rsi")
+api.add_resource(MACD,"/macd")
 t = threading.Thread(target=app.run, kwargs=dict(host='0.0.0.0', port=80))
 t.daemon = True
 t.start()

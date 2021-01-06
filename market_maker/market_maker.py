@@ -22,6 +22,9 @@ watched_files_mtimes = [(f, getmtime(f)) for f in settings.WATCHED_FILES]
 #
 logger = log.setup_custom_logger('root')
 rsi = 50
+macd_histogram = 0
+short_enable = False
+long_enable = False
 
 
 class ExchangeInterface:
@@ -269,17 +272,48 @@ class OrderManager:
         logger.info("Total Contract Delta: %.4f XBT" % self.exchange.calc_delta()['spot'])        
         
     def initialize_position(self):
+        global macd_histogram
+        global rsi
+        global long_enable
+        global short_enable
+
         ticker = ticker = self.exchange.get_ticker()
         position = self.exchange.get_position()
         position_start_entry_qty = self.position_start_entry_qty
-        if(rsi < 50):
-            position_start_entry_qty *= -1
+        
         qty = position['currentQty']
+
         if qty == 0: 
-            if rsi != 50:
-                self.exchange.place_order(position_start_entry_qty, ticker['mid'])
             self.stop_placed = False
 
+        if macd_histogram > 0 and rsi < 50:
+            long_enable = True
+            short_enable = False
+            macd_histogram = 0
+            return
+
+        if macd_histogram < 0 and rsi > 50:
+            long_enable = False
+            short_enable = True
+            macd_histogram = 0
+            return
+
+        if long_enable and rsi > 50:
+            if qty < 0:
+                self.exchange.close_position(float(qty) * -1)
+                return
+            if qty == 0:
+                self.exchange.place_order(position_start_entry_qty, ticker['mid'])
+                return
+
+        if short_enable and rsi < 50:
+            if qty > 0:
+                self.exchange.close_position(float(qty) * -1)
+                return
+            if qty == 0:
+                position_start_entry_qty *= -1
+                self.exchange.place_order(position_start_entry_qty, ticker['mid'])
+                return
 
     def verify_profit(self):
         """Verify profit and Close Position at market Price"""        
