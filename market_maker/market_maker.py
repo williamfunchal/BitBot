@@ -244,7 +244,7 @@ class OrderManager:
         self.instrument = self.exchange.get_instrument()
         self.starting_qty = self.exchange.get_delta()
         self.running_qty = self.starting_qty
-        # self.reset()
+        self.reset()
 
     def reset(self):
         self.exchange.cancel_all_orders()
@@ -306,7 +306,7 @@ class OrderManager:
                 self.exchange.close_position(float(qty) * -1)
                 return
             if qty == 0:
-                self.exchange.place_order(position_start_entry_qty, ticker['mid'])
+                self.exchange.place_order(position_start_entry_qty, ticker['buy'])
                 return
 
         if (short_enable and rsi < 50) or trand_type == 'short':
@@ -315,7 +315,7 @@ class OrderManager:
                 return
             if qty == 0:
                 position_start_entry_qty *= -1
-                self.exchange.place_order(position_start_entry_qty, ticker['mid'])
+                self.exchange.place_order(position_start_entry_qty, ticker['sell'])
                 return
 
         
@@ -710,7 +710,7 @@ class OrderManager:
             self.sanity_check()  # Ensures health of mm - several cut-out points here
             self.print_status()  # Print skew, delta, etc
             self.initialize_position() #Initialize a position
-            # self.place_orders()  # Creates desired orders and converges to existing orders
+            self.place_orders()  # Creates desired orders and converges to existing orders
             self.verify_profit() # Realize if are profitble
 
     def restart(self):
