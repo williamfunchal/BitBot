@@ -28,8 +28,20 @@ class MACD(Resource):
         market_maker.logger.info("MACD: {}".format(market_maker.macd_histogram))
         return "MACD: {}".format(args["value"]), 200
 
+class Signal(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("type")
+        args = parser.parse_args()
+        market_maker.trand_type = args["type"]
+
+        market_maker.logger.info("Signal; received: {}".format(market_maker.trand_type))
+        return "Signal: {}".format(args["type"]), 200
+
 api.add_resource(RSI,"/rsi")
 api.add_resource(MACD,"/macd")
+api.add_resource(Signal,"/signal")
+
 t = threading.Thread(target=app.run, kwargs=dict(host='0.0.0.0', port=80))
 t.daemon = True
 t.start()

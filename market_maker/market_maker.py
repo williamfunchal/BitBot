@@ -25,7 +25,7 @@ rsi = 50
 macd_histogram = 0
 short_enable = False
 long_enable = False
-
+trand_type = '' 
 
 class ExchangeInterface:
     def __init__(self, dry_run=False):
@@ -242,7 +242,7 @@ class OrderManager:
         self.instrument = self.exchange.get_instrument()
         self.starting_qty = self.exchange.get_delta()
         self.running_qty = self.starting_qty
-        self.reset()
+        # self.reset()
 
     def reset(self):
         self.exchange.cancel_all_orders()
@@ -276,6 +276,7 @@ class OrderManager:
         global rsi
         global long_enable
         global short_enable
+        global trand_type
 
         ticker = ticker = self.exchange.get_ticker()
         position = self.exchange.get_position()
@@ -298,7 +299,7 @@ class OrderManager:
             macd_histogram = 0
             return
 
-        if long_enable and rsi > 50:
+        if (long_enable and rsi > 50) or trand_type == 'long':
             if qty < 0:
                 self.exchange.close_position(float(qty) * -1)
                 return
@@ -306,7 +307,7 @@ class OrderManager:
                 self.exchange.place_order(position_start_entry_qty, ticker['mid'])
                 return
 
-        if short_enable and rsi < 50:
+        if (short_enable and rsi < 50) or trand_type == 'short':
             if qty > 0:
                 self.exchange.close_position(float(qty) * -1)
                 return
@@ -315,7 +316,11 @@ class OrderManager:
                 self.exchange.place_order(position_start_entry_qty, ticker['mid'])
                 return
 
+        
+
     def verify_profit(self):
+        global trand_type
+
         """Verify profit and Close Position at market Price"""        
 
         position = self.exchange.get_position()
@@ -359,6 +364,7 @@ class OrderManager:
             logger.info("ROE realized: %.*f" % (3, float(roe)))
             self.trailling = False
             self.max_profit = float(settings.TARGET_TO_PROFIT)
+            trand_type = ""
             return True
 
         #This uses ProfitLimit 
@@ -702,7 +708,7 @@ class OrderManager:
             self.sanity_check()  # Ensures health of mm - several cut-out points here
             self.print_status()  # Print skew, delta, etc
             self.initialize_position() #Initialize a position
-            self.place_orders()  # Creates desired orders and converges to existing orders
+            # self.place_orders()  # Creates desired orders and converges to existing orders
             self.verify_profit() # Realize if are profitble
 
     def restart(self):
