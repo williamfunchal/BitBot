@@ -311,7 +311,7 @@ class OrderManager:
 
         if (short_enable and rsi < 50) or trand_type == 'short':
             if qty > 0:
-                self.exchange.place_order(float(qty) * -1, , ticker['sell'])
+                self.exchange.place_order(float(qty) * -1, ticker['sell'])
                 return
             if qty == 0:
                 position_start_entry_qty *= -1
