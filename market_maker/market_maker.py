@@ -303,7 +303,7 @@ class OrderManager:
 
         if (long_enable and rsi > 50) or trand_type == 'long':
             if qty < 0:
-                self.exchange.place_order(float(qty) * -1, ticker['buy'])
+                # self.exchange.place_order(float(qty) * -1, ticker['buy'])
                 return
             if qty == 0:
                 self.exchange.place_order(position_start_entry_qty, ticker['buy'])
@@ -311,7 +311,7 @@ class OrderManager:
 
         if (short_enable and rsi < 50) or trand_type == 'short':
             if qty > 0:
-                self.exchange.place_order(float(qty) * -1, ticker['sell'])
+                # self.exchange.place_order(float(qty) * -1, ticker['sell'])
                 return
             if qty == 0:
                 position_start_entry_qty *= -1
@@ -354,6 +354,9 @@ class OrderManager:
         if self.trailling == True and self.max_profit < roe :
             self.max_profit = roe            
             return True
+
+        logger.info('unrealisedPnlPcnt: '+str(position['unrealisedPnlPcnt'])+' - unrealisedRoePcnt: '+str(position['unrealisedRoePcnt']))
+        logger.info('SUM ROE: '+str(position['unrealisedRoePcnt'] + position['unrealisedPnlPcnt']))
 
         if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
             logger.info("Aproximated realized PNL: %.*f" % (3, float(pnl))) 
