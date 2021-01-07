@@ -30,7 +30,7 @@ TARGET_TO_PROFIT = 0.015
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = 100
+POSITION_START_ENTRY_QTY = 300
 
 
 ########################################################################################################################
@@ -76,8 +76,8 @@ RELIST_INTERVAL = 0.01
 # Position limits - set to True to activate. Values are in contracts.
 # If you exceed a position limit, the bot will log and stop quoting that side.
 CHECK_POSITION_LIMITS = False
-MIN_POSITION = -50
-MAX_POSITION = 50
+MIN_POSITION = -500
+MAX_POSITION = 500
 
 # If True, will only send orders that rest in the book (ExecInst: ParticipateDoNotInitiate).
 # Use to guarantee a maker rebate.

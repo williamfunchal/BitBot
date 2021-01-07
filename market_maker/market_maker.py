@@ -366,7 +366,7 @@ class OrderManager:
             logger.info("ROE realized: %.*f" % (3, float(roe)))
             self.trailling = False
             self.max_profit = float(settings.TARGET_TO_PROFIT)
-            trand_type = ""
+            # trand_type = ""
             return True
 
         #This uses ProfitLimit 
