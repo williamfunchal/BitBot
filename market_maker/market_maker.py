@@ -357,8 +357,8 @@ class OrderManager:
 
         if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
             logger.info("Aproximated realized PNL: %.*f" % (3, float(pnl))) 
-            self.exchange.close_position(float(qty) * -1)
-            """ stop_qty = float(qty) * -1                
+            # self.exchange.close_position(float(qty) * -1)
+            stop_qty = float(qty) * -1                
             if stop_qty > 0 : stop_ticker = ticker['buy']
             if stop_qty < 0 : stop_ticker = ticker['sell']
             self.exchange.place_order(stop_qty, stop_ticker)
