@@ -33,14 +33,39 @@ class Signal(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("type")
         args = parser.parse_args()
-        market_maker.trand_type = args["type"]
+       
+        if args["type"] == "long":
+            market_maker.long_enable = True
+            market_maker.short_enable = False
 
-        market_maker.logger.info("Signal; received: {}".format(market_maker.trand_type))
+        if args["type"] == "sell":
+            market_maker.short_enable = True
+            market_maker.long_enable = False
+
+        market_maker.logger.info("Signal; received: {}".args["type"] )
         return "Signal: {}".format(args["type"]), 200
+
+class Stochastic(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("strategy")
+        args = parser.parse_args()
+
+        if args["strategy"] == "buy":
+            market_maker.buy_enable = True
+            market_maker.sell_enable = False
+
+        if args["strategy"] == "sell":
+            market_maker.sell_enable = True
+            market_maker.buy_enable = False
+
+        market_maker.logger.info("Signal received: {}".args["strategy"])
+        return "Signal: {}".args["strategy"], 200
 
 api.add_resource(RSI,"/rsi")
 api.add_resource(MACD,"/macd")
 api.add_resource(Signal,"/signal")
+api.add_resource(Stochastic,"/stoch")
 
 t = threading.Thread(target=app.run, kwargs=dict(host='0.0.0.0', port=80))
 t.daemon = True

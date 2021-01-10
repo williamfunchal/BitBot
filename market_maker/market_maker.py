@@ -25,6 +25,8 @@ rsi = 50
 macd_histogram = 0
 short_enable = False
 long_enable = False
+buy_enable = False
+sell_enable = False
 trand_type = '' 
 
 class ExchangeInterface:
@@ -301,17 +303,17 @@ class OrderManager:
             macd_histogram = 0
             return
 
-        if (long_enable and rsi > 50) or trand_type == 'long':
+        if (long_enable and rsi > 50) or (long_enable == True and buy_enable == True):
             if qty < 0:
-                # self.exchange.place_order(float(qty) * -1, ticker['buy'])
+                self.exchange.place_order(float(qty) * -1, ticker['buy'])
                 return
             if qty == 0:
                 self.exchange.place_order(position_start_entry_qty, ticker['buy'])
                 return
 
-        if (short_enable and rsi < 50) or trand_type == 'short':
+        if (short_enable and rsi < 50) or (short_enable == True and sell_enable == True):
             if qty > 0:
-                # self.exchange.place_order(float(qty) * -1, ticker['sell'])
+                self.exchange.place_order(float(qty) * -1, ticker['sell'])
                 return
             if qty == 0:
                 position_start_entry_qty *= -1
@@ -321,7 +323,8 @@ class OrderManager:
         
 
     def verify_profit(self):
-        global trand_type
+        global long_enable
+        global short_enable
 
         """Verify profit and Close Position at market Price"""        
 
@@ -369,7 +372,9 @@ class OrderManager:
             logger.info("ROE realized: %.*f" % (3, float(roe)))
             self.trailling = False
             self.max_profit = float(settings.TARGET_TO_PROFIT)
-            # trand_type = ""
+
+            long_enable = False
+            short_enable = False
             return True
 
         #This uses ProfitLimit 
@@ -387,7 +392,7 @@ class OrderManager:
                 self.max_profit = float(settings.TARGET_TO_PROFIT)
                 return True """
 
-        if self.stop_placed == True:
+        """ if self.stop_placed == True:
             stop_qty = round((float(qty) * -1) / 3 , 0) 
             if stop_qty > 0 : 
                 if ticker['buy'] < entry_price:
@@ -403,7 +408,7 @@ class OrderManager:
         if ((is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION)) and self.trailling == False and roe < -0.1:
             if self.stop_placed == False:
                 self.stop_placed = True
-                return True
+                return True """
 
         if self.trailling:
             logger.info("Trailling: %.*f" % (tickLog, float(self.max_profit)))
