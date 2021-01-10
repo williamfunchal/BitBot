@@ -42,7 +42,7 @@ class Signal(Resource):
             market_maker.short_enable = True
             market_maker.long_enable = False
 
-        market_maker.logger.info("Signal; received: {}".args["type"] )
+        market_maker.logger.info("Signal; received: {}".format(args["type"]))
         return "Signal: {}".format(args["type"]), 200
 
 class Stochastic(Resource):
@@ -59,8 +59,8 @@ class Stochastic(Resource):
             market_maker.sell_enable = True
             market_maker.buy_enable = False
 
-        market_maker.logger.info("Signal received: {}".args["strategy"])
-        return "Signal: {}".args["strategy"], 200
+        market_maker.logger.info("Signal received: {}".format(args["strategy"]))
+        return "Signal: {}".format(args["strategy"]), 200
 
 api.add_resource(RSI,"/rsi")
 api.add_resource(MACD,"/macd")
