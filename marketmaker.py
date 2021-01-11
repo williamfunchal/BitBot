@@ -38,7 +38,7 @@ class Signal(Resource):
             market_maker.long_enable = True
             market_maker.short_enable = False
 
-        if args["type"] == "sell":
+        if args["type"] == "short":
             market_maker.short_enable = True
             market_maker.long_enable = False
 

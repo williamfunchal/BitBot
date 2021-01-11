@@ -280,6 +280,8 @@ class OrderManager:
         global rsi
         global long_enable
         global short_enable
+        global sell_enable
+        global buy_enable
         global trand_type
 
         ticker = ticker = self.exchange.get_ticker()
