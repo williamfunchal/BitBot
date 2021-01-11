@@ -303,15 +303,15 @@ class OrderManager:
             macd_histogram = 0
             return
 
-        if (long_enable and rsi > 50) or (long_enable == True and buy_enable == True):
+        if long_enable == True and buy_enable == True:
             if qty < 0:
                 self.exchange.place_order(float(qty) * -1, ticker['buy'])
                 return
-            if qty == 0:
+            if qty == 0 or qty:
                 self.exchange.place_order(position_start_entry_qty, ticker['buy'])
                 return
 
-        if (short_enable and rsi < 50) or (short_enable == True and sell_enable == True):
+        elif short_enable == True and sell_enable == True:
             if qty > 0:
                 self.exchange.place_order(float(qty) * -1, ticker['sell'])
                 return
@@ -320,6 +320,15 @@ class OrderManager:
                 self.exchange.place_order(position_start_entry_qty, ticker['sell'])
                 return
 
+        elif (long_enable == False and buy_enable == True) or (short_enable == False and sell_enable == True):
+            if qty == 0:
+                if buy_enable:
+                    self.exchange.place_order(10, ticker['buy'])
+                    return
+
+                if sell_enable:
+                    self.exchange.place_order(-10, ticker['sell'])
+                    return
         
 
     def verify_profit(self):
