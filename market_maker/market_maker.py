@@ -728,8 +728,8 @@ class OrderManager:
 
             self.sanity_check()  # Ensures health of mm - several cut-out points here
             self.print_status()  # Print skew, delta, etc
-            self.initialize_position() #Initialize a position
             self.place_orders()  # Creates desired orders and converges to existing orders
+            self.initialize_position() #Initialize a position
             self.verify_profit() # Realize if are profitble
 
     def restart(self):
