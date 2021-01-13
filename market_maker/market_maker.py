@@ -323,7 +323,7 @@ class OrderManager:
 
             return
 
-        elif (long_enable == False and buy_enable == True) or (short_enable == False and sell_enable == True):
+        """ elif (long_enable == False and buy_enable == True) or (short_enable == False and sell_enable == True):
             if qty == 0:
                 if buy_enable:
                     self.exchange.place_order(100, ticker['buy'])
@@ -331,7 +331,7 @@ class OrderManager:
 
                 if sell_enable:
                     self.exchange.place_order(-100, ticker['sell'])
-                    return
+                    return """
         
 
     def verify_profit(self):
