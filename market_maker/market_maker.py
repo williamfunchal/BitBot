@@ -769,7 +769,7 @@ def set_long():
     pnl = position['unrealisedGrossPnl']
     qty = position['currentQty']
 
-    if short_enable == True:
+    if short_enable == True and qty != 0:
         logger.info("Aproximated realized (Market Price) PNL: %.*f" % (3, float(pnl))) 
         exchange.close_position(float(qty) * -1)
         logger.info("ROE realized: %.*f" % (3, float(roe)))
@@ -790,7 +790,7 @@ def set_short():
     pnl = position['unrealisedGrossPnl']
     qty = position['currentQty']
 
-    if long_enable == True:
+    if long_enable == True and qty != 0:
         logger.info("Aproximated realized (Market Price) PNL: %.*f" % (3, float(pnl))) 
         exchange.close_position(float(qty) * -1)
         logger.info("ROE realized: %.*f" % (3, float(roe)))
