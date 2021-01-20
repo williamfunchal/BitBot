@@ -762,7 +762,7 @@ def set_long():
 
     exchange = ExchangeInterface(settings.DRY_RUN)
 
-    position = self.exchange.get_position()
+    position = exchange.get_position()
 
     roe = position['unrealisedRoePcnt']
     pnl_percent = position['unrealisedPnlPcnt']
@@ -783,7 +783,7 @@ def set_short():
 
     exchange = ExchangeInterface(settings.DRY_RUN)
 
-    position = self.exchange.get_position()
+    position = exchange.get_position()
     
     roe = position['unrealisedRoePcnt']
     pnl_percent = position['unrealisedPnlPcnt']
