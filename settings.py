@@ -24,7 +24,9 @@ API_SECRET = "-eQJgYT_D5v264jd0X2QqaLCL1u8eRUkSw4nu0yr2gSPB85u"
 # Instrument to market make on BitMEX.
 SYMBOL = "XBTUSD"
 
-TARGET_TO_PROFIT = 0.2
+LEVERAGE = 80
+
+TARGET_TO_PROFIT = 0.5
 
 # TAKE_PROFIT_TRIGGER = 3000
 
@@ -116,7 +118,7 @@ LOG_LEVEL = logging.INFO
 # If you are running multiple bots on the same symbol, give them unique ORDERID_PREFIXes - otherwise they will
 # cancel each others' orders.
 # Max length is 13 characters.
-ORDERID_PREFIX = "mm_bitmex_"
+ORDERID_PREFIX = "brjaguar_"
 
 # If any of these files (and this file) changes, reload the bot.
 WATCHED_FILES = [join('market_maker', 'market_maker.py'), join('market_maker', 'bitmex.py'), 'settings.py']
