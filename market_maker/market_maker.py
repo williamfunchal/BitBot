@@ -29,6 +29,7 @@ buy_enable = False
 sell_enable = False
 trand_type = '' 
 
+
 class ExchangeInterface:
     def __init__(self, dry_run=False):
         self.dry_run = dry_run
@@ -754,6 +755,48 @@ class OrderManager:
 #
 # Helpers
 #
+
+def set_long():
+    global long_enable
+    global short_enable
+
+    exchange = ExchangeInterface(settings.DRY_RUN)
+
+    position = self.exchange.get_position()
+
+    roe = position['unrealisedRoePcnt']
+    pnl_percent = position['unrealisedPnlPcnt']
+    pnl = position['unrealisedGrossPnl']
+    qty = position['currentQty']
+
+    if short_enable == True:
+        logger.info("Aproximated realized (Market Price) PNL: %.*f" % (3, float(pnl))) 
+        exchange.close_position(float(qty) * -1)
+        logger.info("ROE realized: %.*f" % (3, float(roe)))
+
+    long_enable = True
+    short_enable = False
+
+def set_short():
+    global long_enable
+    global short_enable
+
+    exchange = ExchangeInterface(settings.DRY_RUN)
+
+    position = self.exchange.get_position()
+    
+    roe = position['unrealisedRoePcnt']
+    pnl_percent = position['unrealisedPnlPcnt']
+    pnl = position['unrealisedGrossPnl']
+    qty = position['currentQty']
+
+    if long_enable == True:
+        logger.info("Aproximated realized (Market Price) PNL: %.*f" % (3, float(pnl))) 
+        exchange.close_position(float(qty) * -1)
+        logger.info("ROE realized: %.*f" % (3, float(roe)))
+
+    short_enable = True
+    long_enable = False
 
 
 def XBt_to_XBT(XBt):

@@ -35,12 +35,10 @@ class Signal(Resource):
         args = parser.parse_args()
        
         if args["type"] == "long":
-            market_maker.long_enable = True
-            market_maker.short_enable = False
+            market_maker.set_long()
 
         if args["type"] == "short":
-            market_maker.short_enable = True
-            market_maker.long_enable = False
+            market_maker.set_short()
 
         market_maker.logger.info("Signal; received: {}".format(args["type"]))
         return "Signal: {}".format(args["type"]), 200
