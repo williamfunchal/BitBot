@@ -744,7 +744,7 @@ class OrderManager:
             self.print_status()  # Print skew, delta, etc
             self.place_orders()  # Creates desired orders and converges to existing orders
             self.initialize_position() #Initialize a position
-            self.verify_leverage() #Set the correct leverage value avoiding Bitmex auto set on order execution and liquidations
+            # self.verify_leverage() #Set the correct leverage value avoiding Bitmex auto set on order execution and liquidations
             self.verify_profit() # Realize if are profitble
 
     def restart(self):
