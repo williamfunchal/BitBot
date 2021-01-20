@@ -431,6 +431,7 @@ class OrderManager:
         logger.info("Unrealized PNL percent: %.*f" % (5, float(pnl_percent)))
 
     def verify_leverage(self):
+        position = self.exchange.get_position()
         qty = position['currentQty']
 
         if qty != 0:
@@ -738,7 +739,7 @@ class OrderManager:
             self.print_status()  # Print skew, delta, etc
             self.place_orders()  # Creates desired orders and converges to existing orders
             self.initialize_position() #Initialize a position
-            self.verify_leverage()
+            self.verify_leverage() #Set the correct leverage value avoiding Bitmex auto set on order execution and liquidations
             self.verify_profit() # Realize if are profitble
 
     def restart(self):
