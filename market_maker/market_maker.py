@@ -225,6 +225,7 @@ class OrderManager:
 
     def __init__(self):
         self.exchange = ExchangeInterface(settings.DRY_RUN)
+        self.leverage = settings.LEVERAGE
         self.max_profit = settings.TARGET_TO_PROFIT
         self.take_profit_trigger = settings.TAKE_PROFIT_TRIGGER
         self.trailling = False
@@ -428,6 +429,12 @@ class OrderManager:
         logger.info("Unrealised PNL: %.*f" % (2, float(pnl)))
         logger.info("Unrealized ROE: %.*f" % (5, roe))
         logger.info("Unrealized PNL percent: %.*f" % (5, float(pnl_percent)))
+
+    def verify_leverage(self):
+        qty = position['currentQty']
+
+        if qty != 0:
+            self.exchange.isolate_margin(self.exchange.symbol,self.leverage,True)
 
 
     def get_ticker(self):
@@ -731,6 +738,7 @@ class OrderManager:
             self.print_status()  # Print skew, delta, etc
             self.place_orders()  # Creates desired orders and converges to existing orders
             self.initialize_position() #Initialize a position
+            self.verify_leverage()
             self.verify_profit() # Realize if are profitble
 
     def restart(self):
