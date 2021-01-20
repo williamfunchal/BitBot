@@ -24,7 +24,7 @@ API_SECRET = "-eQJgYT_D5v264jd0X2QqaLCL1u8eRUkSw4nu0yr2gSPB85u"
 # Instrument to market make on BitMEX.
 SYMBOL = "XBTUSD"
 
-LEVERAGE = 80
+LEVERAGE = 90
 
 TARGET_TO_PROFIT = 0.5
 
@@ -32,7 +32,7 @@ TARGET_TO_PROFIT = 0.5
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = 600
+POSITION_START_ENTRY_QTY = 50
 
 
 ########################################################################################################################
@@ -45,7 +45,7 @@ ORDER_PAIRS = 8
 # ORDER_START_SIZE will be the number of contracts submitted on level 1
 # Number of contracts from level 1 to ORDER_PAIRS - 1 will follow the function
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
-ORDER_START_SIZE = 60
+ORDER_START_SIZE = 5
 ORDER_STEP_SIZE = 1
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
