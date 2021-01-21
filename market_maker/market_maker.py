@@ -760,7 +760,7 @@ def set_long():
     global long_enable
     global short_enable
 
-    exchange = ExchangeInterface(settings.DRY_RUN)
+    """ exchange = ExchangeInterface(settings.DRY_RUN)
 
     position = exchange.get_position()
 
@@ -772,7 +772,7 @@ def set_long():
     if short_enable == True and qty != 0:
         logger.info("Aproximated realized (Market Price) PNL: %.*f" % (3, float(pnl))) 
         exchange.close_position(float(qty) * -1)
-        logger.info("ROE realized: %.*f" % (3, float(roe)))
+        logger.info("ROE realized: %.*f" % (3, float(roe))) """
 
     long_enable = True
     short_enable = False
@@ -781,7 +781,7 @@ def set_short():
     global long_enable
     global short_enable
 
-    exchange = ExchangeInterface(settings.DRY_RUN)
+    """ exchange = ExchangeInterface(settings.DRY_RUN)
 
     position = exchange.get_position()
     
@@ -793,7 +793,7 @@ def set_short():
     if long_enable == True and qty != 0:
         logger.info("Aproximated realized (Market Price) PNL: %.*f" % (3, float(pnl))) 
         exchange.close_position(float(qty) * -1)
-        logger.info("ROE realized: %.*f" % (3, float(roe)))
+        logger.info("ROE realized: %.*f" % (3, float(roe))) """
 
     short_enable = True
     long_enable = False
