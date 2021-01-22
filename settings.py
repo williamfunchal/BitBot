@@ -32,7 +32,7 @@ TARGET_TO_PROFIT = 0.50
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = 100
+POSITION_START_ENTRY_QTY = 50
 
 
 ########################################################################################################################
@@ -93,7 +93,7 @@ POST_ONLY = False
 
 # If true, don't set up any orders, just say what we would do
 # DRY_RUN = True
-DRY_RUN = False
+DRY_RUN = True
 
 # How often to re-check and replace orders.
 # Generally, it's safe to make this short because we're fetching from websockets. But if too many
