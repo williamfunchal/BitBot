@@ -26,13 +26,13 @@ SYMBOL = "XBTUSD"
 
 LEVERAGE = 100
 
-TARGET_TO_PROFIT = 0.50
+TARGET_TO_PROFIT = 0.15
 
 # TAKE_PROFIT_TRIGGER = 3000
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = 50
+POSITION_START_ENTRY_QTY = 500
 
 
 ########################################################################################################################
@@ -45,11 +45,11 @@ ORDER_PAIRS = 8
 # ORDER_START_SIZE will be the number of contracts submitted on level 1
 # Number of contracts from level 1 to ORDER_PAIRS - 1 will follow the function
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
-ORDER_START_SIZE = 10
+ORDER_START_SIZE = 100
 ORDER_STEP_SIZE = 0
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
-INTERVAL = 0.0015
+INTERVAL = 0.015
 
 # Minimum spread to maintain, in percent, between asks & bids
 MIN_SPREAD = 0.0025
@@ -93,7 +93,7 @@ POST_ONLY = False
 
 # If true, don't set up any orders, just say what we would do
 # DRY_RUN = True
-DRY_RUN = False
+DRY_RUN = True
 
 # How often to re-check and replace orders.
 # Generally, it's safe to make this short because we're fetching from websockets. But if too many
