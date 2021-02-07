@@ -32,7 +32,7 @@ TARGET_TO_PROFIT = 0.15
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = 500
+POSITION_START_ENTRY_QTY = 1000
 
 
 ########################################################################################################################
@@ -49,7 +49,7 @@ ORDER_START_SIZE = 100
 ORDER_STEP_SIZE = 0
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
-INTERVAL = 0.015
+INTERVAL = 0.0075
 
 # Minimum spread to maintain, in percent, between asks & bids
 MIN_SPREAD = 0.0025
