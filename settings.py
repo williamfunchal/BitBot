@@ -40,12 +40,12 @@ POSITION_START_ENTRY_QTY = 1000
 ########################################################################################################################
 
 # How many pairs of buy/sell orders to keep open
-ORDER_PAIRS = 6
+ORDER_PAIRS = 4
 
 # ORDER_START_SIZE will be the number of contracts submitted on level 1
 # Number of contracts from level 1 to ORDER_PAIRS - 1 will follow the function
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
-ORDER_START_SIZE = 100
+ORDER_START_SIZE = 200
 ORDER_STEP_SIZE = 0
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
