@@ -392,8 +392,8 @@ class OrderManager:
             self.trailling = False
             self.max_profit = float(settings.TARGET_TO_PROFIT)
 
-            """ long_enable = False
-            short_enable = False """
+            #long_enable = False
+            short_enable = False
             return True
 
         #This uses ProfitLimit 
