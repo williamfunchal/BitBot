@@ -24,7 +24,7 @@ API_SECRET = "-eQJgYT_D5v264jd0X2QqaLCL1u8eRUkSw4nu0yr2gSPB85u"
 # Instrument to market make on BitMEX.
 SYMBOL = "XBTUSD"
 
-LEVERAGE = 100
+LEVERAGE = 15
 
 TARGET_TO_PROFIT = 0.15
 
@@ -32,7 +32,7 @@ TARGET_TO_PROFIT = 0.15
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = 2000
+POSITION_START_ENTRY_QTY = 3000
 
 
 ########################################################################################################################
