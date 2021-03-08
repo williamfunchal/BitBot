@@ -32,7 +32,7 @@ TARGET_TO_PROFIT = 0.15
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = 3000
+POSITION_START_ENTRY_QTY = 3000 
 
 
 ########################################################################################################################
