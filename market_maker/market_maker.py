@@ -778,9 +778,9 @@ class OrderManager:
                 self.restart()
 
             self.sanity_check()  # Ensures health of mm - several cut-out points here
-            self.print_status()  # Print skew, delta, etc
-            self.initialize_position() #Initialize a position
-            self.place_orders()  # Creates desired orders and converges to existing orders            
+            self.print_status()  # Print skew, delta, etc            
+            self.place_orders()  # Creates desired orders and converges to existing orders         
+            self.initialize_position() #Initialize a position   
             self.verify_leverage() #Set the correct leverage value avoiding Bitmex auto set on order execution and liquidations
             self.verify_orders_and_leverage() #Verify number of order of the same side and adjust leverage to avoid liquidations
             self.verify_profit() # Realize if are profitble
