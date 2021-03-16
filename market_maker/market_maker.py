@@ -440,7 +440,7 @@ class OrderManager:
         position = self.exchange.get_position()
         qty = position['currentQty']
 
-        if qty != 0:
+        if qty == 0:
             self.exchange.isolate_margin(self.exchange.symbol,self.leverage,True)
 
 
@@ -561,6 +561,38 @@ class OrderManager:
         price = self.get_price_offset(index)
 
         return {'price': price, 'orderQty': quantity, 'side': "Buy" if index < 0 else "Sell"}
+
+    def verify_orders_and_leverage(self):
+
+        position = self.exchange.get_position()
+        qty = position['currentQty']
+        leverage = position['leverage']
+        
+        existing_orders = self.exchange.get_orders()
+
+        buys_matched = 0
+        sells_matched = 0
+
+        if qty != 0:
+
+            # Check all existing orders and match them up with what we want to place.
+            # If there's an open one, we might be able to amend it to fit what we want.
+            for order in existing_orders:
+                if order['side'] == 'Buy':
+                    buys_matched += 1
+                if order['side'] == 'Sell':
+                    sells_matched += 1
+
+            if qty > 0: 
+                if buys_matched <= 1:
+                    leverage -= leverage * 0.10
+                    self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+
+            if qty < 0: 
+                if sells_matched <= 1:
+                    leverage -= leverage * 0.10
+                    self.exchange.isolate_margin(self.exchange.symbol,leverage,True)
+
 
     def converge_orders(self, buy_orders, sell_orders):
         """Converge the orders we currently have in the book with what we want to be in the book.
@@ -747,9 +779,10 @@ class OrderManager:
 
             self.sanity_check()  # Ensures health of mm - several cut-out points here
             self.print_status()  # Print skew, delta, etc
-            self.place_orders()  # Creates desired orders and converges to existing orders
             self.initialize_position() #Initialize a position
-            # self.verify_leverage() #Set the correct leverage value avoiding Bitmex auto set on order execution and liquidations
+            self.place_orders()  # Creates desired orders and converges to existing orders            
+            self.verify_leverage() #Set the correct leverage value avoiding Bitmex auto set on order execution and liquidations
+            self.verify_orders_and_leverage() #Verify number of order of the same side and adjust leverage to avoid liquidations
             self.verify_profit() # Realize if are profitble
 
     def restart(self):
