@@ -441,7 +441,8 @@ class OrderManager:
         qty = position['currentQty']
 
         if qty == 0:
-            self.exchange.isolate_margin(self.exchange.symbol,self.leverage,True)
+            if position['leverage'] != self.leverage:
+                self.exchange.isolate_margin(self.exchange.symbol,self.leverage,True)
 
 
     def get_ticker(self):
