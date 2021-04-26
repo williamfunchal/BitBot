@@ -314,16 +314,20 @@ class OrderManager:
             return
 
         if long_enable == True and buy_enable == True:
-            # if qty < 0:
-                # self.exchange.place_order(float(qty) * -1, ticker['buy'])
+            # Stop 
+            if qty < 0:
+                self.exchange.place_order(float(qty) * -1, ticker['buy'])
+            ###
             if qty == 0 or (qty < (position_start_entry_qty / 2) and qty > 0):
                 self.exchange.place_order(position_start_entry_qty, ticker['buy'])
 
             return
 
         elif short_enable == True and sell_enable == True:
-            # if qty > 0:
-                # self.exchange.place_order(float(qty) * -1, ticker['sell'])
+            #Stop
+            if qty > 0:
+                self.exchange.place_order(float(qty) * -1, ticker['sell'])
+            ###
             if qty == 0 or (qty > ((position_start_entry_qty * -1) / 2) and qty < 0):
                 position_start_entry_qty *= -1
                 self.exchange.place_order(position_start_entry_qty, ticker['sell'])
@@ -392,8 +396,9 @@ class OrderManager:
             self.trailling = False
             self.max_profit = float(settings.TARGET_TO_PROFIT)
 
+            ## Wait for the next Signal
             #long_enable = False
-            short_enable = False
+            #short_enable = False
             return True
 
         #This uses ProfitLimit 
