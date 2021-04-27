@@ -26,13 +26,13 @@ SYMBOL = "XBTUSD"
 
 LEVERAGE = 100
 
-TARGET_TO_PROFIT = 0.50
+TARGET_TO_PROFIT = 1
 
 # TAKE_PROFIT_TRIGGER = 3000
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = 200 
+POSITION_START_ENTRY_QTY = 1000 
 
 
 ########################################################################################################################
