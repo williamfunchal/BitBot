@@ -315,7 +315,7 @@ class OrderManager:
 
         if long_enable == True and buy_enable == True:
             # Stop 
-            if qty < 0:
+            if qty < 0 and roe < 0:
                 self.exchange.place_order(float(qty) * -1, ticker['buy'])
             ###
             if qty == 0 or (qty < (position_start_entry_qty / 2) and qty > 0):
@@ -325,7 +325,7 @@ class OrderManager:
 
         elif short_enable == True and sell_enable == True:
             #Stop
-            if qty > 0:
+            if qty > 0 and roe < 0:
                 self.exchange.place_order(float(qty) * -1, ticker['sell'])
             ###
             if qty == 0 or (qty > ((position_start_entry_qty * -1) / 2) and qty < 0):
