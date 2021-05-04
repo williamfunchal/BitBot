@@ -334,6 +334,19 @@ class OrderManager:
 
             return
 
+        """ elif short_enable == True and buy_enable == True:
+            #Stop
+            if qty > 0 and roe < 0:
+                self.exchange.place_order(float(qty) * -1, ticker['sell'])
+            return
+
+        elif long_enable == True and sell_enable == True:
+            # Stop 
+            if qty < 0 and roe < 0:
+                self.exchange.place_order(float(qty) * -1, ticker['buy'])
+            return """
+
+
         """ elif (long_enable == False and buy_enable == True) or (short_enable == False and sell_enable == True):
             if qty == 0:
                 if buy_enable:
