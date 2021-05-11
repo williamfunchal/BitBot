@@ -26,13 +26,13 @@ SYMBOL = "XBTUSD"
 
 LEVERAGE = 100
 
-TARGET_TO_PROFIT = 5
+TARGET_TO_PROFIT = 3
 
 # TAKE_PROFIT_TRIGGER = 3000
 
 MAINTAIN_ENTRY_PRICE_SPREAD_CENTER = True
 
-POSITION_START_ENTRY_QTY = 1000 
+POSITION_START_ENTRY_QTY = 2000 
 
 
 ########################################################################################################################
@@ -45,7 +45,7 @@ ORDER_PAIRS = 6
 # ORDER_START_SIZE will be the number of contracts submitted on level 1
 # Number of contracts from level 1 to ORDER_PAIRS - 1 will follow the function
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
-ORDER_START_SIZE = 100
+ORDER_START_SIZE = 200
 ORDER_STEP_SIZE = 0
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
