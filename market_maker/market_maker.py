@@ -296,7 +296,8 @@ class OrderManager:
         position_start_entry_qty = self.position_start_entry_qty
         
         qty = position['currentQty']
-        roe = position['unrealisedRoePcnt']
+        if "unrealisedRoePcnt" in position:
+            roe = position['unrealisedRoePcnt']
 
         if qty == 0: 
             self.stop_placed = False
@@ -368,10 +369,15 @@ class OrderManager:
         ticker = ticker = self.exchange.get_ticker()
         tickLog = self.exchange.get_instrument()['tickLog']
         entry_price = position["avgEntryPrice"]
+        if "unrealisedRoePcnt" in position:
+            roe = position['unrealisedRoePcnt']
 
-        roe = position['unrealisedRoePcnt']
-        pnl_percent = position['unrealisedPnlPcnt']
-        pnl = position['unrealisedGrossPnl']
+        if "unrealisedPnlPcnt" in position:
+            pnl_percent = position['unrealisedPnlPcnt']
+
+        if "unrealisedGrossPnl"in position:
+            pnl = position['unrealisedGrossPnl']
+
         qty = position['currentQty']
 
         is_buy_position = False
@@ -380,86 +386,86 @@ class OrderManager:
 
         logger.info("Target ROE: %.*f" % (5, float(self.max_profit)))
 
-        
-        if qty < 0: 
-            is_sell_position = True           
-        
-        #if (is_sell_position == True and (self.take_profit_trigger * -1) > qty ) or (is_sell_position == False and self.take_profit_trigger < qty ):
-        if  self.trailling == False and self.max_profit < roe:     
-            self.trailling = True
-            self.max_profit = roe
-            return True
-
-        if self.trailling == True and self.max_profit < roe :
-            self.max_profit = roe            
-            return True
-
-        logger.info('unrealisedPnlPcnt: '+str(position['unrealisedPnlPcnt'])+' - unrealisedRoePcnt: '+str(position['unrealisedRoePcnt']))
-        logger.info('SUM ROE: '+str(position['unrealisedRoePcnt'] + position['unrealisedPnlPcnt']))
-
-        if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
-            logger.info("Aproximated realized (Market Price) PNL: %.*f" % (3, float(pnl))) 
-            self.exchange.close_position(float(qty) * -1)
-            """ stop_qty = float(qty) * -1                
-            if stop_qty > 0 : stop_ticker = ticker['buy']
-            if stop_qty < 0 : stop_ticker = ticker['sell']
-            self.exchange.place_order(stop_qty, stop_ticker) """
-            #self.exchange.stop_limit(stop_qty,stop_ticker,stop_ticker) """
-            logger.info("ROE realized: %.*f" % (3, float(roe)))
-            self.trailling = False
-            self.max_profit = float(settings.TARGET_TO_PROFIT)
-
-            ## Wait for the next Signal
-            #long_enable = False
-            #short_enable = False
-            return True
-
-        #This uses ProfitLimit 
-        """ if (is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION):
-            if self.stop_placed == False:
-                stop_qty = round((float(qty) * -1) / 3 , 0)        
-                        
-                if stop_qty > 0 : 
-                    exec_price =  entry_price - 1
-                if stop_qty < 0 : 
-                    exec_price = entry_price + 1
-                self.exchange.stop_limit(stop_qty,exec_price,entry_price)
-                logger.info("Creating stop at: %.*f" % (2, float(exec_price))) 
-                self.stop_placed = True
-                self.max_profit = float(settings.TARGET_TO_PROFIT)
-                return True """
-
-        """ if self.stop_placed == True:
-            stop_qty = round((float(qty) * -1) / 3 , 0) 
-            if stop_qty > 0 : 
-                if ticker['buy'] < entry_price:
-                    self.trailling = True
-                    self.max_profit = roe
-            if stop_qty < 0 : 
-                if ticker['sell'] > entry_price:
-                    self.trailling = True
-                    self.max_profit = roe
-            self.stop_placed = False
-            return True
+        if qty != 0:        
+            if qty < 0: 
+                is_sell_position = True           
             
-        if ((is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION)) and self.trailling == False and roe < -0.1:
-            if self.stop_placed == False:
-                self.stop_placed = True
-                return True """
+            #if (is_sell_position == True and (self.take_profit_trigger * -1) > qty ) or (is_sell_position == False and self.take_profit_trigger < qty ):
+            if  self.trailling == False and self.max_profit < roe:     
+                self.trailling = True
+                self.max_profit = roe
+                return True
 
-        if self.trailling:
-            logger.info("Trailling: %.*f" % (tickLog, float(self.max_profit)))
+            if self.trailling == True and self.max_profit < roe :
+                self.max_profit = roe            
+                return True
 
-        logger.info("Unrealised PNL: %.*f" % (2, float(pnl)))
-        logger.info("Unrealized ROE: %.*f" % (5, roe))
-        logger.info("Unrealized PNL percent: %.*f" % (5, float(pnl_percent)))
+            logger.info('unrealisedPnlPcnt: '+str(position['unrealisedPnlPcnt'])+' - unrealisedRoePcnt: '+str(position['unrealisedRoePcnt']))
+            logger.info('SUM ROE: '+str(position['unrealisedRoePcnt'] + position['unrealisedPnlPcnt']))
+
+            if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
+                logger.info("Aproximated realized (Market Price) PNL: %.*f" % (3, float(pnl))) 
+                self.exchange.close_position(float(qty) * -1)
+                """ stop_qty = float(qty) * -1                
+                if stop_qty > 0 : stop_ticker = ticker['buy']
+                if stop_qty < 0 : stop_ticker = ticker['sell']
+                self.exchange.place_order(stop_qty, stop_ticker) """
+                #self.exchange.stop_limit(stop_qty,stop_ticker,stop_ticker) """
+                logger.info("ROE realized: %.*f" % (3, float(roe)))
+                self.trailling = False
+                self.max_profit = float(settings.TARGET_TO_PROFIT)
+
+                ## Wait for the next Signal
+                #long_enable = False
+                #short_enable = False
+                return True
+
+            #This uses ProfitLimit 
+            """ if (is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION):
+                if self.stop_placed == False:
+                    stop_qty = round((float(qty) * -1) / 3 , 0)        
+                            
+                    if stop_qty > 0 : 
+                        exec_price =  entry_price - 1
+                    if stop_qty < 0 : 
+                        exec_price = entry_price + 1
+                    self.exchange.stop_limit(stop_qty,exec_price,entry_price)
+                    logger.info("Creating stop at: %.*f" % (2, float(exec_price))) 
+                    self.stop_placed = True
+                    self.max_profit = float(settings.TARGET_TO_PROFIT)
+                    return True """
+
+            """ if self.stop_placed == True:
+                stop_qty = round((float(qty) * -1) / 3 , 0) 
+                if stop_qty > 0 : 
+                    if ticker['buy'] < entry_price:
+                        self.trailling = True
+                        self.max_profit = roe
+                if stop_qty < 0 : 
+                    if ticker['sell'] > entry_price:
+                        self.trailling = True
+                        self.max_profit = roe
+                self.stop_placed = False
+                return True
+                
+            if ((is_sell_position == True and qty <= settings.MIN_POSITION) or (is_sell_position == False and qty >= settings.MAX_POSITION)) and self.trailling == False and roe < -0.1:
+                if self.stop_placed == False:
+                    self.stop_placed = True
+                    return True """
+
+            if self.trailling:
+                logger.info("Trailling: %.*f" % (tickLog, float(self.max_profit)))
+
+            logger.info("Unrealised PNL: %.*f" % (2, float(pnl)))
+            logger.info("Unrealized ROE: %.*f" % (5, roe))
+            logger.info("Unrealized PNL percent: %.*f" % (5, float(pnl_percent)))
 
     def verify_leverage(self):
         position = self.exchange.get_position()
         qty = position['currentQty']
 
         if qty == 0:
-            if position['leverage'] != self.leverage:
+            if "leverage" in position and position['leverage'] != self.leverage:
                 self.exchange.isolate_margin(self.exchange.symbol,self.leverage,True)
 
 
@@ -548,7 +554,9 @@ class OrderManager:
         buy_orders = []
         sell_orders = []
         position = self.exchange.get_position()
-        liquidation_price = position["liquidationPrice"]
+        if "liquidationPrice" in position:
+            liquidation_price = position["liquidationPrice"]
+
         entry_price = position["avgEntryPrice"]
         current_qty = position["currentQty"]
         # Create orders from the outside in. This is intentional - let's say the inner order gets taken;
@@ -585,40 +593,41 @@ class OrderManager:
 
         position = self.exchange.get_position()
         qty = position['currentQty']
-        leverage = position['leverage']
+        if "leverage" in position:
+            leverage = position['leverage']
         
-        existing_orders = self.exchange.get_orders()
+            existing_orders = self.exchange.get_orders()
 
-        buys_matched = 0
-        sells_matched = 0
+            buys_matched = 0
+            sells_matched = 0
 
-        if qty != 0:
+            if qty != 0:
 
-            # Check all existing orders and match them up with what we want to place.
-            # If there's an open one, we might be able to amend it to fit what we want.
-            for order in existing_orders:
-                if order['side'] == 'Buy':
-                    buys_matched += 1
-                if order['side'] == 'Sell':
-                    sells_matched += 1
+                # Check all existing orders and match them up with what we want to place.
+                # If there's an open one, we might be able to amend it to fit what we want.
+                for order in existing_orders:
+                    if order['side'] == 'Buy':
+                        buys_matched += 1
+                    if order['side'] == 'Sell':
+                        sells_matched += 1
 
-            if qty > 0: 
-                if buys_matched <= 1:
-                    leverage -= leverage * 0.05
-                    self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                if qty > 0: 
+                    if buys_matched <= 1:
+                        leverage -= leverage * 0.05
+                        self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
-                if buys_matched > 2:
-                    leverage += leverage * 0.05
-                    self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                    if buys_matched > 2:
+                        leverage += leverage * 0.05
+                        self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
-            if qty < 0: 
-                if sells_matched <= 1:
-                    leverage -= leverage * 0.05
-                    self.exchange.isolate_margin(self.exchange.symbol,leverage,True)
+                if qty < 0: 
+                    if sells_matched <= 1:
+                        leverage -= leverage * 0.05
+                        self.exchange.isolate_margin(self.exchange.symbol,leverage,True)
 
-                if sells_matched > 2:
-                    leverage += leverage * 0.05
-                    self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                    if sells_matched > 2:
+                        leverage += leverage * 0.05
+                        self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
 
     def converge_orders(self, buy_orders, sell_orders):
