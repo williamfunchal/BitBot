@@ -596,28 +596,30 @@ class OrderManager:
 
                 # Check all existing orders and match them up with what we want to place.
                 # If there's an open one, we might be able to amend it to fit what we want.
-                for order in existing_orders:
-                    if order['side'] == 'Buy':
-                        buys_matched += 1
-                    if order['side'] == 'Sell':
-                        sells_matched += 1
+                # for order in existing_orders:
+                #     if order['side'] == 'Buy':
+                #         buys_matched += 1
+                #     if order['side'] == 'Sell':
+                #         sells_matched += 1
+
+                #margin_limit = position["markPrice"] - 50
 
                 if qty > 0: 
-                    if buys_matched <= 1:
+                    if position["markPrice"] <= position["liquidationPrice"] + 50:
                         leverage -= leverage * 0.3
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
-                    if buys_matched > 2:
-                        leverage += leverage * 0.3
+                    if position["markPrice"] > position["liquidationPrice"]:
+                        leverage += leverage * 0.03
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
                 if qty < 0: 
-                    if sells_matched <= 1:
+                    if position["markPrice"] >= position["liquidationPrice"] - 50:
                         leverage -= leverage * 0.3
                         self.exchange.isolate_margin(self.exchange.symbol,leverage,True)
 
-                    if sells_matched > 2:
-                        leverage += leverage * 0.3
+                    if position["markPrice"] < position["liquidationPrice"]:
+                        leverage += leverage * 0.01
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
 
