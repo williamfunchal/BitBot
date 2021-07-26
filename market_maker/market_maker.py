@@ -605,20 +605,20 @@ class OrderManager:
                 #margin_limit = position["markPrice"] - 50
 
                 if qty > 0: 
-                    if position["markPrice"] <= position["liquidationPrice"] + 50:
+                    if position["markPrice"] <= position["liquidationPrice"] + 50 and position["markPrice"] < position["entryPrice"]:
                         leverage -= leverage * 0.3
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
-                    if position["markPrice"] > position["liquidationPrice"]:
+                    elif position["markPrice"] > position["liquidationPrice"] and position["markPrice"] > position["liquidationPrice"] + 50:
                         leverage += leverage * 0.03
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
                 if qty < 0: 
-                    if position["markPrice"] >= position["liquidationPrice"] - 50:
+                    if position["markPrice"] >= position["liquidationPrice"] - 50 and position["markPrice"] > position["entryPrice"]:
                         leverage -= leverage * 0.3
                         self.exchange.isolate_margin(self.exchange.symbol,leverage,True)
 
-                    if position["markPrice"] < position["liquidationPrice"]:
+                    elif position["markPrice"] < position["liquidationPrice"] and position["markPrice"] < position["liquidationPrice"] - 50:
                         leverage += leverage * 0.01
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
