@@ -549,31 +549,17 @@ class OrderManager:
     def place_orders(self):
         """Create order items for use in convergence."""
 
-        logger.info("Create order items for use in convergence.")
-
         buy_orders = []
         sell_orders = []
-        position = self.exchange.get_position()
-        if "liquidationPrice" in position:
-            liquidation_price = position["liquidationPrice"]
-
-        entry_price = position["avgEntryPrice"]
-        current_qty = position["currentQty"]
         # Create orders from the outside in. This is intentional - let's say the inner order gets taken;
         # then we match orders from the outside in, ensuring the fewest number of orders are amended and only
         # a new order is created in the inside. If we did it inside-out, all orders would be amended
         # down and a new order would be created at the outside.
         for i in reversed(range(1, settings.ORDER_PAIRS + 1)):
             if not self.long_position_limit_exceeded():
-                order = self.prepare_order(-i)
-                if entry_price != None and order['price'] < entry_price: 
-                    if (current_qty > 0 and order['price'] > liquidation_price) or current_qty < 0:
-                        buy_orders.append(order)
+                buy_orders.append(self.prepare_order(-i))
             if not self.short_position_limit_exceeded():
-                order = self.prepare_order(i)
-                if entry_price != None and order['price'] > entry_price:
-                    if (current_qty < 0 and order['price'] < liquidation_price) or current_qty > 0:
-                        sell_orders.append(order)
+                sell_orders.append(self.prepare_order(i))
 
         return self.converge_orders(buy_orders, sell_orders)
 
@@ -816,7 +802,7 @@ class OrderManager:
             self.sanity_check()  # Ensures health of mm - several cut-out points here
             self.print_status()  # Print skew, delta, etc            
             self.place_orders()  # Creates desired orders and converges to existing orders         
-            self.initialize_position() #Initialize a position   
+            #self.initialize_position() #Initialize a position   
             self.verify_leverage() #Set the correct leverage value avoiding Bitmex auto set on order execution and liquidations
             self.verify_orders_and_leverage() #Verify number of order of the same side and adjust leverage to avoid liquidations
             self.verify_profit() # Realize if are profitble
