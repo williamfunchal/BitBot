@@ -604,20 +604,20 @@ class OrderManager:
 
                 if qty > 0: 
                     if buys_matched <= 1:
-                        leverage -= leverage * 0.05
+                        leverage -= leverage * 0.1
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
                     if buys_matched > 2:
-                        leverage += leverage * 0.05
+                        leverage += leverage * 0.1
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
                 if qty < 0: 
                     if sells_matched <= 1:
-                        leverage -= leverage * 0.05
+                        leverage -= leverage * 0.1
                         self.exchange.isolate_margin(self.exchange.symbol,leverage,True)
 
                     if sells_matched > 2:
-                        leverage += leverage * 0.05
+                        leverage += leverage * 0.1
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
 
