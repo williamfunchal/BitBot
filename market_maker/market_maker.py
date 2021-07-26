@@ -220,8 +220,12 @@ class ExchangeInterface:
         return self.bitmex.cancel([order['orderID'] for order in orders])
 
     def isolate_margin(self, symbol, leverage, rethrow_errors):
-        if self.dry_run or leverage > 100:
+        if self.dry_run:
             return
+
+        if leverage > 100:
+            leverage = 99
+
         return self.bitmex.isolate_margin(symbol, leverage, rethrow_errors)
 
 
