@@ -403,7 +403,8 @@ class OrderManager:
             logger.info('unrealisedPnlPcnt: '+str(position['unrealisedPnlPcnt'])+' - unrealisedRoePcnt: '+str(position['unrealisedRoePcnt']))
             logger.info('SUM ROE: '+str(position['unrealisedRoePcnt'] + position['unrealisedPnlPcnt']))
 
-            if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :            
+            if self.trailling == True and (self.max_profit - (self.max_profit * 0.1)) >= roe :    
+                self.exchange.cancel_all_orders()        
                 logger.info("Aproximated realized (Market Price) PNL: %.*f" % (3, float(pnl))) 
                 self.exchange.close_position(float(qty) * -1)
                 """ stop_qty = float(qty) * -1                

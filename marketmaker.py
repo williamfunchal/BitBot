@@ -60,10 +60,10 @@ class Stochastic(Resource):
         market_maker.logger.info("Signal received: {}".format(args["strategy"]))
         return "Signal: {}".format(args["strategy"]), 200
 
-api.add_resource(RSI,"/rsi")
-api.add_resource(MACD,"/macd")
-api.add_resource(Signal,"/signal")
-api.add_resource(Stochastic,"/stoch")
+# api.add_resource(RSI,"/rsi")
+# api.add_resource(MACD,"/macd")
+# api.add_resource(Signal,"/signal")
+# api.add_resource(Stochastic,"/stoch")
 
 t = threading.Thread(target=app.run, kwargs=dict(host='0.0.0.0', port=80))
 t.daemon = True
