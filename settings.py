@@ -26,7 +26,7 @@ SYMBOL = "XBTUSD"
 
 LEVERAGE = 100
 
-TARGET_TO_PROFIT = 1
+TARGET_TO_PROFIT = 0.75
 
 # TAKE_PROFIT_TRIGGER = 3000
 
@@ -93,7 +93,7 @@ POST_ONLY = False
 
 # If true, don't set up any orders, just say what we would do
 # DRY_RUN = True
-DRY_RUN = False
+DRY_RUN = True
 
 # How often to re-check and replace orders.
 # Generally, it's safe to make this short because we're fetching from websockets. But if too many
