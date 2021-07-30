@@ -42,6 +42,8 @@ class ExchangeInterface:
                                     orderIDPrefix=settings.ORDERID_PREFIX, postOnly=settings.POST_ONLY,
                                     timeout=settings.TIMEOUT)
 
+        self.leverage = settings.LEVERAGE
+
     def cancel_order(self, order):
         tickLog = self.get_instrument()['tickLog']
         logger.info("Canceling: %s %d @ %.*f" % (order['side'], order['orderQty'], tickLog, order['price']))
@@ -223,8 +225,8 @@ class ExchangeInterface:
         if self.dry_run:
             return
 
-        if leverage > 100:
-            leverage = 99
+        if leverage > self.leverage:
+            leverage = self.leverage
 
         return self.bitmex.isolate_margin(symbol, leverage, rethrow_errors)
 
