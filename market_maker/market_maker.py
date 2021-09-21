@@ -241,6 +241,7 @@ class OrderManager:
         self.max_profit = settings.TARGET_TO_PROFIT
         self.take_profit_trigger = settings.TAKE_PROFIT_TRIGGER
         self.trailling = False
+        self.auto_deleverage = False
         self.stop_placed = False
         self.position_start_entry_qty = float(settings.POSITION_START_ENTRY_QTY)
         # Once exchange is created, register exit handler that will always cancel orders
@@ -607,22 +608,47 @@ class OrderManager:
                 #margin_limit = position["markPrice"] - 50
 
                 if qty > 0: 
-                    if position["markPrice"] <= position["liquidationPrice"] + 50 and position["markPrice"] < position["avgEntryPrice"]:
+                    total = position["markPrice"] - position["liquidationPrice"]
+                    if total < 300:
                         leverage -= leverage * 0.3
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                        print("setting leverage: "+str(leverage))
+                    elif total >= 300:
+                        if leverage != settings.LEVERAGE:
+                            leverage = settings.LEVERAGE
+                            self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
-                    elif position["markPrice"] > position["liquidationPrice"] + 50 :
-                        leverage += leverage * 0.03
-                        self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                if qty < 0:
 
-                if qty < 0: 
-                    if position["markPrice"] >= position["liquidationPrice"] - 50 and position["markPrice"] > position["avgEntryPrice"]:
+                    total = position["liquidationPrice"] - position["markPrice"]
+                    if total < 300:
                         leverage -= leverage * 0.3
-                        self.exchange.isolate_margin(self.exchange.symbol,leverage,True)
-
-                    elif position["markPrice"] < position["liquidationPrice"] - 50 :
-                        leverage += leverage * 0.01
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                        print("setting leverage: "+str(leverage))
+                    elif total >= 300:
+                        if leverage != settings.LEVERAGE:
+                            leverage = settings.LEVERAGE
+                            self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+
+                print("leverage: "+str(leverage))
+
+                # if qty > 0: 
+                #     if position["markPrice"] <= position["liquidationPrice"] + 50 and position["markPrice"] < position["avgEntryPrice"]:
+                #         leverage -= leverage * 0.3
+                #         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+
+                #     elif position["markPrice"] > position["liquidationPrice"] + 50 :
+                #         leverage += leverage * 0.03
+                #         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+
+                # if qty < 0: 
+                #     if position["markPrice"] >= position["liquidationPrice"] - 50 and position["markPrice"] > position["avgEntryPrice"]:
+                #         leverage -= leverage * 0.3
+                #         self.exchange.isolate_margin(self.exchange.symbol,leverage,True)
+
+                #     elif position["markPrice"] < position["liquidationPrice"] - 50 :
+                #         leverage += leverage * 0.01
+                #         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
 
     def converge_orders(self, buy_orders, sell_orders):
