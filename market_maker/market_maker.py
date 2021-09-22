@@ -613,9 +613,12 @@ class OrderManager:
                         leverage -= leverage * 0.3
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
                         print("setting leverage: "+str(leverage))
-                    elif total >= 300:
-                        if leverage != settings.LEVERAGE:
+                    elif total > 300:
+                        if leverage > settings.LEVERAGE:
                             leverage = settings.LEVERAGE
+                            self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                        elif leverage < settings.LEVERAGE:
+                            leverage += leverage * 0.01
                             self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
                 if qty < 0:
@@ -625,9 +628,12 @@ class OrderManager:
                         leverage -= leverage * 0.3
                         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
                         print("setting leverage: "+str(leverage))
-                    elif total >= 300:
-                        if leverage != settings.LEVERAGE:
+                    elif total > 300:
+                        if leverage > settings.LEVERAGE:
                             leverage = settings.LEVERAGE
+                            self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                        elif leverage < settings.LEVERAGE:
+                            leverage += leverage * 0.01
                             self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
                 print("leverage: "+str(leverage))
