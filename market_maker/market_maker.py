@@ -209,6 +209,7 @@ class ExchangeInterface:
     def create_orders(self, orders):
         if self.dry_run:
             return orders
+        self.isolate_margin(self.symbol, 60 ,True)
         return self.bitmex.create_orders(orders)
 
     def place_order(self,quantity,price):
