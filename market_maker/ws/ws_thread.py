@@ -328,7 +328,8 @@ if __name__ == "__main__":
     logger.addHandler(ch)
     ws = BitMEXWebsocket()
     ws.logger = logger
-    ws.connect("https://testnet.bitmex.com/api/v1")
+    # ws.connect("https://testnet.bitmex.com/api/v1")
+    ws.connect("https://ws.testnet.bitmex.com/realtime")
     while(ws.ws.sock.connected):
         sleep(1)
 
