@@ -209,7 +209,6 @@ class ExchangeInterface:
     def create_orders(self, orders):
         if self.dry_run:
             return orders
-        self.isolate_margin(self.symbol, 60 ,True)
         return self.bitmex.create_orders(orders)
 
     def place_order(self,quantity,price):
@@ -663,6 +662,7 @@ class OrderManager:
            This involves amending any open orders and creating new ones if any have filled completely.
            We start from the closest orders outward."""
 
+        position = self.exchange.get_position()
         tickLog = self.exchange.get_instrument()['tickLog']
         to_amend = []
         to_create = []
@@ -694,19 +694,13 @@ class OrderManager:
                 to_cancel.append(order)
 
         while buys_matched < len(buy_orders):
-            #if settings.MAINTAIN_SPREADS == True:
-            #if buy_orders[buys_matched]['price'] < self.get_ticker()['mid']: 
+            #if position['currentQty'] < 0 or position['liquidationPrice'] < buy_orders[buys_matched]['price']:
             to_create.append(buy_orders[buys_matched])
-            #else:
-                #to_create.append(buy_orders[buys_matched])            
             buys_matched += 1
 
         while sells_matched < len(sell_orders):
-            #if settings.MAINTAIN_SPREADS == True:
-            #if sell_orders[sells_matched]['price'] > self.get_ticker()['mid']: 
+            #if position['currentQty'] > 0 or position['liquidationPrice'] > sell_orders[sells_matched]['price']:
             to_create.append(sell_orders[sells_matched])
-            #else:
-                #to_create.append(sell_orders[sells_matched])            
             sells_matched += 1
 
         if len(to_amend) > 0:
@@ -738,6 +732,8 @@ class OrderManager:
             logger.info("Creating %d orders:" % (len(to_create)))
             for order in reversed(to_create):
                 logger.info("%4s %d @ %.*f" % (order['side'], order['orderQty'], tickLog, order['price']))
+            
+            self.exchange.isolate_margin(self.exchange.symbol, settings.LEVERAGE ,True)
             self.exchange.create_orders(to_create)
 
         # Could happen if we exceed a delta limit
