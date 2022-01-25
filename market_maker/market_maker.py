@@ -607,34 +607,34 @@ class OrderManager:
 
                 #margin_limit = position["markPrice"] - 50
 
-                if qty > 0: 
-                    total = position["markPrice"] - position["liquidationPrice"]
-                    if total < 300:
-                        leverage -= leverage * 0.3
-                        self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
-                        print("setting leverage: "+str(leverage))
-                    elif total > 300:
-                        if leverage > settings.LEVERAGE:
-                            leverage = settings.LEVERAGE
-                            self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
-                        elif leverage < settings.LEVERAGE:
-                            leverage += leverage * 0.01
-                            self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                # if qty > 0: 
+                #     total = position["markPrice"] - position["liquidationPrice"]
+                #     if total < 300:
+                #         leverage -= leverage * 0.3
+                #         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                #         print("setting leverage: "+str(leverage))
+                #     elif total > 300:
+                #         if leverage > settings.LEVERAGE:
+                #             leverage = settings.LEVERAGE
+                #             self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                #         elif leverage < settings.LEVERAGE:
+                #             leverage += leverage * 0.01
+                #             self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
-                if qty < 0:
+                # if qty < 0:
 
-                    total = position["liquidationPrice"] - position["markPrice"]
-                    if total < 300:
-                        leverage -= leverage * 0.3
-                        self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
-                        print("setting leverage: "+str(leverage))
-                    elif total > 300:
-                        if leverage > settings.LEVERAGE:
-                            leverage = settings.LEVERAGE
-                            self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
-                        elif leverage < settings.LEVERAGE:
-                            leverage += leverage * 0.01
-                            self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                #     total = position["liquidationPrice"] - position["markPrice"]
+                #     if total < 300:
+                #         leverage -= leverage * 0.3
+                #         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                #         print("setting leverage: "+str(leverage))
+                #     elif total > 300:
+                #         if leverage > settings.LEVERAGE:
+                #             leverage = settings.LEVERAGE
+                #             self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+                #         elif leverage < settings.LEVERAGE:
+                #             leverage += leverage * 0.01
+                #             self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
 
                 print("leverage: "+str(leverage))
 
@@ -655,6 +655,9 @@ class OrderManager:
                 #     elif position["markPrice"] < position["liquidationPrice"] - 50 :
                 #         leverage += leverage * 0.01
                 #         self.exchange.isolate_margin(self.exchange.symbol, leverage ,True)
+
+                if leverage > self.leverage:
+                    self.exchange.isolate_margin(self.exchange.symbol, self.leverage ,True)
 
 
     def converge_orders(self, buy_orders, sell_orders):
