@@ -697,12 +697,18 @@ class OrderManager:
                 to_cancel.append(order)
 
         while buys_matched < len(buy_orders):
-            if position['currentQty'] < 0 or position['liquidationPrice'] < buy_orders[buys_matched]['price']:
+            if position['currentQty'] != 0:
+                if (position['currentQty'] < 0 or position['liquidationPrice'] < buy_orders[buys_matched]['price']):
+                    to_create.append(buy_orders[buys_matched])
+            elif position['currentQty'] == 0:
                 to_create.append(buy_orders[buys_matched])
             buys_matched += 1
 
         while sells_matched < len(sell_orders):
-            if position['currentQty'] > 0 or position['liquidationPrice'] > sell_orders[sells_matched]['price']:
+            if position['currentQty'] != 0:
+                if position['currentQty'] > 0 or position['liquidationPrice'] > sell_orders[sells_matched]['price']:
+                    to_create.append(sell_orders[sells_matched])
+            elif position['currentQty'] == 0:
                 to_create.append(sell_orders[sells_matched])
             sells_matched += 1
 
