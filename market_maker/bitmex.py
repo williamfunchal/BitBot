@@ -383,6 +383,10 @@ class BitMEX(object):
         except requests.exceptions.Timeout as e:
             # Timeout, re-run this request
             self.logger.warning("Timed out on request: %s (%s), retrying..." % (path, json.dumps(postdict or '')))
+            if path == "position/leverage":
+                # Reset retry counter on success
+                self.retries = 0
+                return response.json()
             return retry()
 
         except requests.exceptions.ConnectionError as e:
@@ -393,5 +397,4 @@ class BitMEX(object):
 
         # Reset retry counter on success
         self.retries = 0
-
         return response.json()
