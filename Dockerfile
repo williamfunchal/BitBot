@@ -12,6 +12,6 @@ COPY market_maker/ws/* /src/market_maker/ws/
 
 RUN pip install -c constraints.txt bitmex-market-maker
 RUN pip install flask==2.0.0
-RUN pip install flask-restful==0.3.8
+RUN pip install flask-restful==0.3.9
 
 CMD [ "python" , "marketmaker.py"]
