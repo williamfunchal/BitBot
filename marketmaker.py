@@ -44,6 +44,7 @@ class Signal(Resource):
         return "Signal: {}".format(args["type"]), 200
 
 class Stochastic(Resource):
+    
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument("strategy")
