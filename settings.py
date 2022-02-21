@@ -47,7 +47,7 @@ ORDER_PAIRS = 4
 # Number of contracts from level 1 to ORDER_PAIRS - 1 will follow the function
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
 ORDER_START_SIZE = 200
-ORDER_STEP_SIZE = 0
+ORDER_STEP_SIZE = 100
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
 INTERVAL = 0.0025
