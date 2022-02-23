@@ -201,14 +201,76 @@ class ExchangeInterface:
         if instrument['midPrice'] is None:
             raise errors.MarketEmptyError("Orderbook is empty, cannot quote")
 
-    def amend_orders(self, orders):
+    def amend_orders(self, orders,liquidation_price=None, position_price=None):
         if self.dry_run:
             return orders
+        #check if position_price is not None
+        if position_price is not None:
+            
+            orders_to_remove = []
+            #loop orders
+            for id, order in enumerate(orders):
+                #check if position_price is positive            
+                if position_price is not None and position_price > 0:
+                    #check if the order price is lower than the liquidation price. If True remove the order from orders.
+                    if order['price'] < liquidation_price:
+                        orders_to_remove.append(order)
+                        continue
+                    #else, continue to the next order
+                    continue
+
+                #check if position_price is negative
+                if position_price is not None and position_price < 0:
+                    #check if the order price is greater than the liquidation price. If True remove the order from orders.
+                    if order['price'] > liquidation_price:
+                        orders_to_remove.append(order)
+                        continue
+                    #else, continue to the next order
+                    continue
+
+            #check if orders_to_remove is not empty
+            #loop orders_to_remove and remove the order from orders.
+            if orders_to_remove is not None:
+                for id, order_to_remove in enumerate(orders_to_remove):
+                    orders.remove(order_to_remove)
+                    
+                     
         return self.bitmex.amend_orders(orders)
 
-    def create_orders(self, orders):
+    def create_orders(self, orders, liquidation_price=None, position_price=None):
+        
+        #check if position_price is not None
+        if position_price is not None:
+            orders_to_remove = []
+            #loop orders
+            for id, order in enumerate(orders):
+                #check if position_price is positive            
+                if position_price is not None and position_price > 0:
+                    #check if the order price is lower than the liquidation price. If True remove the order from orders.
+                    if order['price'] < liquidation_price:
+                        orders_to_remove.append(id)
+                        continue
+                    #else, continue to the next order
+                    continue
+
+                #check if position_price is negative
+                if position_price is not None and position_price < 0:
+                    #check if the order price is greater than the liquidation price. If True remove the order from orders.
+                    if order['price'] > liquidation_price:
+                        orders_to_remove.append(id)
+                        continue
+                    #else, continue to the next order
+                    continue
+
+            #check if orders_to_remove is not empty
+            #loop orders_to_remove and remove the order from orders.
+            if orders_to_remove is not None:
+                for id, order_to_remove in enumerate(orders_to_remove):
+                    orders.remove(order_to_remove)
+        
         if self.dry_run:
             return orders
+        
         return self.bitmex.create_orders(orders)
 
     def place_order(self,quantity,price):
@@ -674,6 +736,9 @@ class OrderManager:
         sells_matched = 0
         existing_orders = self.exchange.get_orders()
 
+        liqPrice = position['liquidationPrice'] if position['liquidationPrice'] is not None else None
+        currentQty = position['currentQty'] if position['currentQty'] != 0 else None
+
         # Check all existing orders and match them up with what we want to place.
         # If there's an open one, we might be able to amend it to fit what we want.
         for order in existing_orders:
@@ -726,7 +791,7 @@ class OrderManager:
             # made it not amendable.
             # If that happens, we need to catch it and re-tick.
             try:
-                self.exchange.amend_orders(to_amend)
+                self.exchange.amend_orders(to_amend,liqPrice, currentQty)
             except requests.exceptions.HTTPError as e:
                 errorObj = e.response.json()
                 if errorObj['error']['message'] == 'Invalid ordStatus':
@@ -740,10 +805,10 @@ class OrderManager:
         if len(to_create) > 0:
             logger.info("Creating %d orders:" % (len(to_create)))
             for order in reversed(to_create):
-                logger.info("%4s %d @ %.*f" % (order['side'], order['orderQty'], tickLog, order['price']))
+                logger.info("%4s %d @ %.*f" % (order['side'], order['orderQty'], tickLog, order['price']))            
             
             self.exchange.isolate_margin(self.exchange.symbol, settings.LEVERAGE ,True)
-            self.exchange.create_orders(to_create)
+            self.exchange.create_orders(to_create, liqPrice, currentQty)
 
         # Could happen if we exceed a delta limit
         if len(to_cancel) > 0:
