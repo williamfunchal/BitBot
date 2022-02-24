@@ -50,7 +50,7 @@ ORDER_START_SIZE = 100
 ORDER_STEP_SIZE = 100
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
-INTERVAL = 0.0025
+INTERVAL = 0.0050
 
 # Minimum spread to maintain, in percent, between asks & bids
 MIN_SPREAD = 0.0015
