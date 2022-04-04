@@ -736,7 +736,7 @@ class OrderManager:
         sells_matched = 0
         existing_orders = self.exchange.get_orders()
 
-        liqPrice = position['liquidationPrice'] if position['liquidationPrice'] is not None else None
+        liqPrice = position['liquidationPrice'] if 'liquidationPrice' in position and position['liquidationPrice'] is not None else None
         currentQty = position['currentQty'] if position['currentQty'] != 0 else None
 
         # Check all existing orders and match them up with what we want to place.
