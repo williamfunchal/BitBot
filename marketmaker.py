@@ -7,8 +7,6 @@ from flask_restful import Api, Resource, reqparse
 app = Flask(__name__)
 api = Api(app)
 
-
-
 class RSI(Resource):
     def post(self):
         parser = reqparse.RequestParser()

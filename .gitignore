@@ -1,4 +1,4 @@
 **/*.pyc
 **/__pycache__
 ## everything at .venv folder
-.venv/**
+.venv/

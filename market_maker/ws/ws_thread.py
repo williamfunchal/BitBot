@@ -179,8 +179,9 @@ class BitMEXWebsocket():
 
         if self.shouldAuth is False:
             return []
-
+        
         self.logger.info("Authenticating with API Key.")
+        
         # To auth to the WS using an API key, we generate a signature of a nonce and
         # the WS API endpoint.
         nonce = generate_expires()

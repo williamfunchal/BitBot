@@ -46,11 +46,11 @@ ORDER_PAIRS = 4
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
 # ORDER_START_SIZE = 200
 # ORDER_STEP_SIZE = 200
-ORDER_START_SIZE = 200
-ORDER_STEP_SIZE = 200
+ORDER_START_SIZE = 100
+ORDER_STEP_SIZE = 100
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
-INTERVAL = 0.0050
+INTERVAL = 0.0020
 
 # Minimum spread to maintain, in percent, between asks & bids
 MIN_SPREAD = 0.0015
@@ -119,7 +119,7 @@ LOG_LEVEL = logging.INFO
 # If you are running multiple bots on the same symbol, give them unique ORDERID_PREFIXes - otherwise they will
 # cancel each others' orders.
 # Max length is 13 characters.
-ORDERID_PREFIX = "brjaguar_"
+ORDERID_PREFIX = os.environ.get('BITMEX_MY_NAME_PREFIX')
 
 # If any of these files (and this file) changes, reload the bot.
 WATCHED_FILES = [join('market_maker', 'market_maker.py'), join('market_maker', 'bitmex.py'), 'settings.py']
