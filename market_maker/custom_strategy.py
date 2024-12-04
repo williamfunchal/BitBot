@@ -26,4 +26,4 @@ def run() -> None:
     try:
         order_manager.run_loop()
     except (KeyboardInterrupt, SystemExit):
-        sys.exit()
+        sys.exit(1)

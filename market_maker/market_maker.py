@@ -628,7 +628,7 @@ class OrderManager:
         except Exception as e:
             logger.info("Unable to cancel orders: %s" % e)
 
-        sys.exit()
+        sys.exit(1)
 
     def run_loop(self):
         while True:
@@ -990,5 +990,5 @@ def run():
     try:
         om.run_loop()
     except (KeyboardInterrupt, SystemExit):
-        sys.exit()
+        sys.exit(1)
 
