@@ -23,9 +23,8 @@ API_SECRET = os.environ.get('BITMEX_API_SECRET')
 # Instrument to market make on BitMEX.
 SYMBOL = "XBTUSD"
 
-LEVERAGE = os.environ.get('BITMEX_TRADING_LEVERAGE') # 65
-
-TARGET_TO_PROFIT = os.environ.get('BITMEX_TARGET_TO_PROFIT') # 0.5
+LEVERAGE = int(os.environ.get('BITMEX_TRADING_LEVERAGE')) # 65
+TARGET_TO_PROFIT = float(os.environ.get('BITMEX_TARGET_TO_PROFIT')) # 0.5
 
 # TAKE_PROFIT_TRIGGER = 3000
 
@@ -46,11 +45,9 @@ ORDER_PAIRS = 4
 # [ORDER_START_SIZE + ORDER_STEP_SIZE (Level -1)]
 # ORDER_START_SIZE = 200
 # ORDER_STEP_SIZE = 200
-ORDER_START_SIZE = os.environ.get('BITMEX_ORDER_START_SIZE') #100
-ORDER_START_SIZE = int(ORDER_START_SIZE)
+ORDER_START_SIZE = int(os.environ.get('BITMEX_ORDER_START_SIZE')) #100
 
-ORDER_STEP_SIZE = os.environ.get('BITMEX_ORDER_STEP_SIZE') #100
-ORDER_STEP_SIZE = int(ORDER_STEP_SIZE)
+ORDER_STEP_SIZE = int(os.environ.get('BITMEX_ORDER_STEP_SIZE')) #100
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
 INTERVAL = 0.0020
