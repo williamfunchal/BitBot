@@ -25,6 +25,7 @@ SYMBOL = "XBTUSD"
 
 LEVERAGE = int(os.environ.get('BITMEX_TRADING_LEVERAGE')) # 65
 TARGET_TO_PROFIT = float(os.environ.get('BITMEX_TARGET_TO_PROFIT')) # 0.5
+STOP_LOSS = float(os.environ.get('BITMEX_STOP_LOSS')) # 0.5
 
 # TAKE_PROFIT_TRIGGER = 3000
 
@@ -46,14 +47,13 @@ ORDER_PAIRS = int(os.environ.get('BITMEX_ORDER_PAIRS'))  #4
 # ORDER_START_SIZE = 200
 # ORDER_STEP_SIZE = 200
 ORDER_START_SIZE = int(os.environ.get('BITMEX_ORDER_START_SIZE')) #100
-
 ORDER_STEP_SIZE = int(os.environ.get('BITMEX_ORDER_STEP_SIZE')) #100
 
 # Distance between successive orders, as a percentage (example: 0.005 for 0.5%)
-INTERVAL = float('BITMEX_ORDERS_INTERVAL') #0.0020
+INTERVAL = float(os.environ.get('BITMEX_ORDERS_INTERVAL')) #0.0020
 
 # Minimum spread to maintain, in percent, between asks & bids
-MIN_SPREAD = float('BITMEX_MIN_SPREAD') # 0.0015
+MIN_SPREAD = float(os.environ.get('BITMEX_MIN_SPREAD')) # 0.0015
 
 # If True, market-maker will place orders just inside the existing spread and work the interval % outwards,
 # rather than starting in the middle and killing potentially profitable spreads.

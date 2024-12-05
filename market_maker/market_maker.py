@@ -160,6 +160,26 @@ class OrderManager:
                     self.exchange.place_order(-100, ticker['sell'])
                     return """
         
+    # Close position when price approaches top values
+    def verify_stop_loss(self):        
+        # Get current position and price data
+        position = self.exchange.get_position()
+        ticker = self.exchange.get_ticker()
+        current_price = ticker['last']
+        current_qty = position['currentQty']
+
+        # Check if price is approaching ATH threshold
+        if current_price >= settings.STOP_LOSS:  # STOP_LOSS should be set below ATH
+            logger.info(f"Stop loss triggered. Price: {current_price} approaching ATH")
+            
+            # Close any existing position at market
+            if current_qty != 0:
+                self.exchange.close_position()
+                logger.info(f"Position closed at {current_price}")
+                return True
+        logger.info('Stop Loss on Hold!')
+        return False 
+        
 
     def verify_profit(self):
         global long_enable
@@ -168,7 +188,7 @@ class OrderManager:
         """Verify profit and Close Position at market Price"""        
 
         position = self.exchange.get_position()
-        ticker = ticker = self.exchange.get_ticker()
+        ticker = self.exchange.get_ticker()
         tickLog = self.exchange.get_instrument()['tickLog']
         # entry_price = position["avgEntryPrice"]
         if "unrealisedRoePcnt" in position:
@@ -651,6 +671,7 @@ class OrderManager:
             self.verify_leverage() #Set the correct leverage value avoiding Bitmex auto set on order execution and liquidations
             self.verify_orders_and_leverage() #Verify number of order of the same side and adjust leverage to avoid liquidations
             self.verify_profit() # Realize if are profitble
+            self.verify_stop_loss() # Verify Stop Loss and close position
 
     def restart(self):
         logger.info("Restarting the market maker...")
