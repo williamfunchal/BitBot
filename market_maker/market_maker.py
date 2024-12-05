@@ -1010,6 +1010,7 @@ def run():
     # Try/except just keeps ctrl-c from printing an ugly stacktrace
     try:
         om.run_loop()
-    except (KeyboardInterrupt, SystemExit):
-        sys.exit(1)
+    except Exception as e:
+        logger.error(f"Error in marketmaker: {e}")
+        # sys.exit(1)
 

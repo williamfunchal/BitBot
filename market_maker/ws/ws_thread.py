@@ -112,9 +112,15 @@ class BitMEXWebsocket():
         # return self.data['orderBook25'][0]
 
     def open_orders(self, clOrdIDPrefix):
-        orders = self.data['order']
-        # Filter to only open orders (leavesQty > 0) and those that we actually placed
-        return [o for o in orders if str(o['clOrdID']).startswith(clOrdIDPrefix) and o['leavesQty'] > 0]
+        orders = self.data.get('order', [])
+        if not orders:
+            return []
+
+        # Filter orders with safe key access
+        return [o for o in orders 
+                if o.get('clOrdID') and 
+                str(o.get('clOrdID')).startswith(clOrdIDPrefix) and 
+                o.get('leavesQty', 0) > 0]
 
     def position(self, symbol):
         positions = self.data['position']
